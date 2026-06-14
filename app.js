@@ -62,8 +62,8 @@ document.querySelectorAll("[data-step-target]").forEach((button) => {
   button.addEventListener("click", () => adjustStepper(button));
 });
 
-document.getElementById("sampleButton").addEventListener("click", addSampleData);
-document.getElementById("exportSalesCsv").addEventListener("click", exportSalesCsv);
+document.getElementById("sampleButton")?.addEventListener("click", addSampleData);
+document.getElementById("exportSalesCsv")?.addEventListener("click", exportSalesCsv);
 document.getElementById("exportJson").addEventListener("click", exportJson);
 document.getElementById("importJson").addEventListener("change", importJson);
 document.getElementById("clearData").addEventListener("click", clearData);

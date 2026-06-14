@@ -16,9 +16,14 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, var(--accent-soft), rgba(255, 255, 255, 0) 32rem),
     radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 26rem),
@@ -157,7 +162,8 @@ button {
 
 .main {
   padding: 34px;
-  overflow: hidden;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .topbar {
@@ -948,8 +954,14 @@ body[data-theme="white"] .swatch-white span {
 }
 
 @media (max-width: 920px) {
+  body {
+    min-width: 0;
+  }
+
   .app {
     grid-template-columns: 1fr;
+    width: 100%;
+    min-width: 0;
   }
 
   .sidebar {
@@ -957,25 +969,45 @@ body[data-theme="white"] .swatch-white span {
     top: 0;
     z-index: 2;
     padding: 14px;
+    margin: 12px;
+    max-width: calc(100vw - 24px);
+    overflow: hidden;
   }
 
   .brand {
     margin-bottom: 14px;
   }
 
+  .brand h1 {
+    font-size: 20px;
+  }
+
+  .brand p {
+    font-size: 13px;
+  }
+
   .tabs {
     display: flex;
     overflow-x: auto;
+    max-width: 100%;
     padding-bottom: 2px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .tab {
     flex: 0 0 auto;
     width: auto;
+    min-width: max-content;
   }
 
   .main {
-    padding: 18px;
+    width: 100%;
+    padding: 16px 12px 32px;
   }
 
   .topbar,
@@ -992,9 +1024,41 @@ body[data-theme="white"] .swatch-white span {
   .sale-editor {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .work-area {
+    padding: 16px;
+  }
+
+  table {
+    min-width: 720px;
+  }
 }
 
 @media (max-width: 560px) {
+  .sidebar {
+    margin: 8px;
+    max-width: calc(100vw - 16px);
+    border-radius: 24px;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+  }
+
+  .tab {
+    padding: 12px 18px;
+    font-size: 16px;
+  }
+
+  .topbar {
+    margin-bottom: 18px;
+  }
+
   .metrics,
   .form-grid,
   .detail-controls,
@@ -1009,6 +1073,30 @@ body[data-theme="white"] .swatch-white span {
 
   .wide {
     grid-column: span 1;
+  }
+
+  .grid.two,
+  .grid.three {
+    gap: 14px;
+  }
+
+  .work-area {
+    border-radius: 22px;
+    padding: 14px;
+  }
+
+  .section-heading {
+    margin: -2px -2px 16px;
+    padding: 12px 14px;
+  }
+
+  .stepper {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  input,
+  select {
+    min-width: 0;
   }
 
   h2 {
