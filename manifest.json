@@ -1,0 +1,19 @@
+{
+  "name": "妖怪大福帳",
+  "short_name": "妖怪大福帳",
+  "description": "100-YOKAIの宴・オンライン・その他売上管理",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#fff8fb",
+  "theme_color": "#f4b3c2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

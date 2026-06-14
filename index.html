@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>妖怪大福帳</title>
+    <meta name="theme-color" content="#f4b3c2" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="manifest" href="manifest.json?v=11" />
+    <link rel="apple-touch-icon" href="icon.svg?v=11" />
+    <link rel="stylesheet" href="style.css?v=11" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark" aria-label="妖怪ロゴ">
+            <span class="hitodama-core"></span>
+            <span class="hitodama-tail"></span>
+          </div>
+          <div>
+            <h1>妖怪大福帳</h1>
+            <p>100-YOKAI 売上管理</p>
+          </div>
+        </div>
+        <nav class="tabs" aria-label="メインメニュー">
+          <button class="tab active" data-tab="sales">売上入力</button>
+          <button class="tab" data-tab="monthly">月間成績</button>
+          <button class="tab" data-tab="annual">年間成績</button>
+          <button class="tab" data-tab="detail">詳細集計</button>
+          <button class="tab" data-tab="products">商品管理</button>
+          <button class="tab" data-tab="settings">設定</button>
+          <button class="tab" data-tab="data">データ</button>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">100-YOKAI</p>
+            <h2 id="pageTitle">売上入力</h2>
+          </div>
+          <button id="sampleButton" class="secondary">サンプル投入</button>
+        </header>
+
+        <section id="sales" class="panel active">
+          <div class="grid three">
+            <section class="work-area">
+              <div class="section-heading">
+                <div>
+                  <h3>宴</h3>
+                  <p>ライブ・特典会の売上</p>
+                </div>
+              </div>
+              <form id="liveSaleForm" class="form-grid">
+                <label>日付<input name="date" type="date" required /></label>
+                <label>会場名<input name="venue" placeholder="例: 横浜1000CLUB" /></label>
+                <label>イベント名<input name="eventName" placeholder="例: 100-YOKAI特典会" /></label>
+                <label>動員
+                  <span class="stepper">
+                    <input id="liveAttendance" name="attendance" type="number" min="0" step="1" value="0" required />
+                    <span class="stepper-actions">
+                      <button class="minus" type="button" data-step-target="liveAttendance" data-step="-1">ー</button>
+                      <button class="plus" type="button" data-step-target="liveAttendance" data-step="1">＋</button>
+                    </span>
+                  </span>
+                </label>
+                <label>商品<select name="productId" required></select></label>
+                <label>数量
+                  <span class="stepper">
+                    <input id="liveQuantity" name="quantity" type="number" min="0" step="1" value="1" required />
+                    <span class="stepper-actions">
+                      <button class="minus" type="button" data-step-target="liveQuantity" data-step="-1">ー</button>
+                      <button class="plus" type="button" data-step-target="liveQuantity" data-step="1">＋</button>
+                    </span>
+                  </span>
+                </label>
+                <label>新規動員
+                  <span class="stepper">
+                    <input id="liveNewFans" name="newFans" type="number" min="0" step="1" value="0" />
+                    <span class="stepper-actions">
+                      <button class="minus" type="button" data-step-target="liveNewFans" data-step="-1">ー</button>
+                      <button class="plus" type="button" data-step-target="liveNewFans" data-step="1">＋</button>
+                    </span>
+                  </span>
+                </label>
+                <label>新規写メ
+                  <span class="stepper">
+                    <input id="liveNewPhoto" name="newPhoto" type="number" min="0" step="1" value="0" />
+                    <span class="stepper-actions">
+                      <button class="minus" type="button" data-step-target="liveNewPhoto" data-step="-1">ー</button>
+                      <button class="plus" type="button" data-step-target="liveNewPhoto" data-step="1">＋</button>
+                    </span>
+                  </span>
+                </label>
+                <label class="wide">メモ<input name="note" placeholder="例: 新規名、部、特記事項" /></label>
+                <button type="submit" class="primary">宴売上を追加</button>
+              </form>
+            </section>
+
+            <section class="work-area">
+              <div class="section-heading">
+                <div>
+                  <h3>オンライン</h3>
+                  <p>配信・通販・オンライン特典</p>
+                </div>
+              </div>
+              <form id="onlineSaleForm" class="form-grid">
+                <label>日付<input name="date" type="date" required /></label>
+                <label>商品<select name="productId" required></select></label>
+                <label>個数
+                  <span class="stepper">
+                    <input id="onlineQuantity" name="quantity" type="number" min="0" step="1" value="1" required />
+                    <span class="stepper-actions">
+                      <button class="minus" type="button" data-step-target="onlineQuantity" data-step="-1">ー</button>
+                      <button class="plus" type="button" data-step-target="onlineQuantity" data-step="1">＋</button>
+                    </span>
+                  </span>
+                </label>
+                <label class="wide">メモ<input name="note" placeholder="例: 購入者名、配信名、発送メモ" /></label>
+                <button type="submit" class="primary">オンライン売上を追加</button>
+              </form>
+            </section>
+
+            <section class="work-area">
+              <div class="section-heading">
+                <div>
+                  <h3>その他</h3>
+                  <p>撮影会・トークポート　等</p>
+                </div>
+              </div>
+              <form id="otherSaleForm" class="form-grid">
+                <label>日付<input name="date" type="date" required /></label>
+                <label>商品<select name="productId" required></select></label>
+                <label>個数
+                  <span class="stepper">
+                    <input id="otherQuantity" name="quantity" type="number" min="0" step="1" value="1" required />
+                    <span class="stepper-actions">
+                      <button class="minus" type="button" data-step-target="otherQuantity" data-step="-1">ー</button>
+                      <button class="plus" type="button" data-step-target="otherQuantity" data-step="1">＋</button>
+                    </span>
+                  </span>
+                </label>
+                <label>任意金額<input name="amountOverride" type="number" min="0" step="1" placeholder="例: 5000" /></label>
+                <label class="wide">メモ<input name="note" placeholder="例: 撮影会、トークポート、その他メモ" /></label>
+                <button type="submit" class="primary">その他売上を追加</button>
+              </form>
+            </section>
+          </div>
+
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>直近の入力</h3>
+              <button id="exportSalesCsv" class="secondary">CSV出力</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>日付</th>
+                    <th>区分</th>
+                    <th>宴</th>
+                    <th>動員</th>
+                    <th>商品</th>
+                    <th>数量</th>
+                    <th>チェキ券</th>
+                    <th>金額</th>
+                    <th>メモ</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="recentSalesTable"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section id="monthly" class="panel">
+          <div class="top-actions inline-filter">
+            <input id="monthFilter" type="month" aria-label="年月選択" />
+          </div>
+
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>月間目標</h3>
+            </div>
+            <form id="monthlyGoalForm" class="form-grid">
+              <label>チェキ券目標<input name="ticketGoal" type="number" min="0" step="1" placeholder="例: 200" /></label>
+              <label>動員目標<input name="attendanceGoal" type="number" min="0" step="1" placeholder="例: 100" /></label>
+              <button type="submit" class="primary">目標を保存</button>
+            </form>
+          </section>
+
+          <div class="goal-progress-grid">
+            <article class="progress-card">
+              <div id="monthlyTicketProgressPie" class="progress-pie" style="--progress: 0%">
+                <strong>0%</strong>
+              </div>
+              <div>
+                <span>チェキ券目標</span>
+                <p id="monthlyTicketProgressText">0 / 0 枚</p>
+              </div>
+            </article>
+            <article class="progress-card">
+              <div id="monthlyAttendanceProgressPie" class="progress-pie" style="--progress: 0%">
+                <strong>0%</strong>
+              </div>
+              <div>
+                <span>動員目標</span>
+                <p id="monthlyAttendanceProgressText">0 / 0 人</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="metrics monthly-metrics">
+            <article>
+              <span>総売り上げ</span>
+              <strong id="monthlyRevenue">¥0</strong>
+            </article>
+            <article>
+              <span>バック総額</span>
+              <strong id="monthlyBack">¥0</strong>
+            </article>
+            <article>
+              <span>オンライン</span>
+              <strong id="monthlyOnline">¥0</strong>
+            </article>
+          </div>
+
+          <div class="grid three">
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>宴 当月</h3>
+              </div>
+              <div id="liveMonthlyStats" class="summary-list"></div>
+            </section>
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>オンライン</h3>
+              </div>
+              <div id="onlineMonthlyStats" class="summary-list"></div>
+            </section>
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>その他</h3>
+              </div>
+              <div id="otherMonthlyStats" class="summary-list"></div>
+            </section>
+          </div>
+
+          <div class="grid three">
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>前月比</h3>
+              </div>
+              <div id="monthlyComparison" class="summary-list"></div>
+            </section>
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>改善案</h3>
+              </div>
+              <div id="aiSuggestions" class="suggestions"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="annual" class="panel">
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>年選択</h3>
+            </div>
+            <div class="detail-controls">
+              <label>年<input id="annualYear" type="number" min="2000" max="2100" /></label>
+            </div>
+          </section>
+          <section class="work-area">
+            <div class="section-heading">
+              <div>
+                <h3>年間推移</h3>
+                <p>チェキ券枚数・動員・目標を月ごとに表示</p>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="annualTrendChart" width="980" height="360"></canvas>
+            </div>
+            <div class="chart-legend">
+              <span><i class="legend-ticket"></i>チェキ券枚数</span>
+              <span><i class="legend-ticket-goal"></i>チェキ券目標</span>
+              <span><i class="legend-attendance"></i>動員</span>
+              <span><i class="legend-attendance-goal"></i>動員目標</span>
+            </div>
+          </section>
+        </section>
+
+        <section id="detail" class="panel">
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>期間選択</h3>
+            </div>
+            <div class="detail-controls">
+              <label>表示単位
+                <select id="detailMode">
+                  <option value="month">月ごと</option>
+                  <option value="year">年ごと</option>
+                  <option value="day">日ごと</option>
+                </select>
+              </label>
+              <label id="detailMonthLabel">年月<input id="detailMonth" type="month" /></label>
+              <label id="detailYearLabel">年<input id="detailYear" type="number" min="2000" max="2100" /></label>
+              <label id="detailDayLabel">年月日<input id="detailDay" type="date" /></label>
+            </div>
+          </section>
+
+          <div class="metrics">
+            <article>
+              <span>総売り上げ</span>
+              <strong id="detailRevenue">¥0</strong>
+            </article>
+            <article>
+              <span>チェキ券総枚数</span>
+              <strong id="detailTickets">0</strong>
+            </article>
+            <article>
+              <span>バック総額</span>
+              <strong id="detailBack">¥0</strong>
+            </article>
+            <article>
+              <span>入力数</span>
+              <strong id="detailRows">0</strong>
+            </article>
+          </div>
+
+          <div class="grid two">
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>宴</h3>
+              </div>
+              <div id="detailLiveStats" class="summary-list"></div>
+            </section>
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>オンライン</h3>
+              </div>
+              <div id="detailOnlineStats" class="summary-list"></div>
+            </section>
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>その他</h3>
+              </div>
+              <div id="detailOtherStats" class="summary-list"></div>
+            </section>
+          </div>
+
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>売上明細</h3>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>日付</th>
+                    <th>区分</th>
+                    <th>宴</th>
+                    <th>動員</th>
+                    <th>商品</th>
+                    <th>数量</th>
+                    <th>チェキ券枚数計</th>
+                    <th>金額</th>
+                    <th>メモ</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="detailSalesTable"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section id="products" class="panel">
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>商品登録</h3>
+            </div>
+            <form id="productForm" class="form-grid">
+              <label>区分
+                <select name="channel" required>
+                  <option value="live">宴</option>
+                  <option value="online">オンライン</option>
+                  <option value="other">その他</option>
+                </select>
+              </label>
+              <label>商品名<input name="name" required placeholder="例: チェキ" /></label>
+              <label>金額<input name="price" type="number" min="0" value="1500" required /></label>
+              <label>チェキ券換算<input name="ticketValue" type="number" min="0" step="0.1" value="1" /></label>
+              <button type="submit" class="primary">登録</button>
+            </form>
+          </section>
+          <div class="grid three">
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>宴</h3>
+              </div>
+              <div id="liveProductList" class="cards compact"></div>
+            </section>
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>オンライン</h3>
+              </div>
+              <div id="onlineProductList" class="cards compact"></div>
+            </section>
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>その他</h3>
+              </div>
+              <div id="otherProductList" class="cards compact"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="settings" class="panel">
+          <div class="grid two">
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>全体バック設定</h3>
+              </div>
+              <form id="settingsForm" class="form-grid">
+                <label class="wide">チェキ券枚数ごとの単価
+                  <input name="backTiers" placeholder="0:405,50:425,100:455,150:485,200:520" />
+                </label>
+                <button type="submit" class="primary">保存</button>
+              </form>
+            </section>
+
+            <section class="work-area">
+              <div class="section-heading">
+                <h3>カラー変更</h3>
+              </div>
+              <div id="colorPalette" class="color-palette"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="data" class="panel">
+          <section class="work-area">
+            <div class="section-heading">
+              <div>
+                <h3>Supabase同期</h3>
+                <p>PCとスマホで同じデータを使う</p>
+              </div>
+            </div>
+            <form id="syncForm" class="form-grid">
+              <label class="wide">Supabase URL<input name="url" placeholder="https://xxxx.supabase.co" /></label>
+              <label class="wide">anon key<input name="anonKey" placeholder="eyJ..." /></label>
+              <label>自分専用同期ID<input name="syncId" placeholder="自動生成されます" /></label>
+              <label>自動同期
+                <select name="autoSync">
+                  <option value="off">OFF</option>
+                  <option value="on">ON</option>
+                </select>
+              </label>
+              <button type="submit" class="primary">同期設定を保存</button>
+            </form>
+            <div class="data-actions sync-actions">
+              <button id="pullCloud" class="secondary">クラウドから読み込み</button>
+              <button id="pushCloud" class="primary">クラウドへ保存</button>
+            </div>
+            <p id="syncStatus" class="hint">自分のPC・スマホだけ同じ同期IDを使ってください。他メンバーとは別IDにするとデータが混ざりません。</p>
+          </section>
+
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>バックアップ</h3>
+            </div>
+            <div class="data-actions">
+              <button id="exportJson" class="primary">JSONバックアップ</button>
+              <label class="file-button">JSON取込<input id="importJson" type="file" accept="application/json" /></label>
+              <button id="clearData" class="danger">全データ削除</button>
+            </div>
+            <p class="hint">データはこのブラウザ内に保存されます。別端末へ移すときはJSONバックアップを使ってください。</p>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <template id="emptyTemplate">
+      <div class="empty">まだデータがありません</div>
+    </template>
+
+    <script src="app.js?v=11"></script>
+  </body>
+</html>
