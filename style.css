@@ -346,6 +346,7 @@ select {
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.82);
   color: var(--ink);
+  font-size: 16px;
   padding: 10px 12px;
 }
 
@@ -751,7 +752,7 @@ th {
 .product-editor select {
   min-height: 36px;
   padding: 7px 9px;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .mini-danger {
@@ -1097,6 +1098,7 @@ body[data-theme="white"] .swatch-white span {
   input,
   select {
     min-width: 0;
+    font-size: 16px;
   }
 
   h2 {
