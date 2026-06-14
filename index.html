@@ -2,15 +2,15 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>妖怪大福帳</title>
     <meta name="theme-color" content="#f4b3c2" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=13" />
-    <link rel="apple-touch-icon" href="icon.svg?v=13" />
-    <link rel="stylesheet" href="style.css?v=13" />
+    <link rel="manifest" href="manifest.json?v=14" />
+    <link rel="apple-touch-icon" href="icon.svg?v=14" />
+    <link rel="stylesheet" href="style.css?v=14" />
   </head>
   <body>
     <div class="app">
@@ -94,7 +94,7 @@
                     </span>
                   </span>
                 </label>
-                <label class="wide">メモ<input name="note" placeholder="例: 新規名、部、特記事項" /></label>
+                <label class="wide">メモ<textarea name="note" rows="3" placeholder="例: 新規名、部、特記事項"></textarea></label>
                 <button type="submit" class="primary">宴売上を追加</button>
               </form>
             </section>
@@ -118,7 +118,7 @@
                     </span>
                   </span>
                 </label>
-                <label class="wide">メモ<input name="note" placeholder="例: 購入者名、配信名、発送メモ" /></label>
+                <label class="wide">メモ<textarea name="note" rows="3" placeholder="例: 購入者名、配信名、発送メモ"></textarea></label>
                 <button type="submit" class="primary">オンライン売上を追加</button>
               </form>
             </section>
@@ -143,7 +143,7 @@
                   </span>
                 </label>
                 <label>任意金額<input name="amountOverride" type="number" min="0" step="1" placeholder="例: 5000" /></label>
-                <label class="wide">メモ<input name="note" placeholder="例: 撮影会、トークポート、その他メモ" /></label>
+                <label class="wide">メモ<textarea name="note" rows="3" placeholder="例: 撮影会、トークポート、その他メモ"></textarea></label>
                 <button type="submit" class="primary">その他売上を追加</button>
               </form>
             </section>
@@ -214,16 +214,24 @@
 
           <div class="metrics monthly-metrics">
             <article>
-              <span>総売り上げ</span>
-              <strong id="monthlyRevenue">¥0</strong>
-            </article>
-            <article>
               <span>バック総額</span>
               <strong id="monthlyBack">¥0</strong>
             </article>
             <article>
               <span>オンライン</span>
               <strong id="monthlyOnline">¥0</strong>
+            </article>
+            <article>
+              <span>その他売り上げ</span>
+              <strong id="monthlyOther">¥0</strong>
+            </article>
+            <article>
+              <span>収入総額</span>
+              <strong id="monthlyIncome">¥0</strong>
+            </article>
+            <article>
+              <span>総売り上げ</span>
+              <strong id="monthlyRevenue">¥0</strong>
             </article>
           </div>
 
@@ -487,6 +495,6 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=13"></script>
+    <script src="app.js?v=14"></script>
   </body>
 </html>

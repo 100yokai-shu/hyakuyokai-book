@@ -30,7 +30,7 @@ const metricLabels = {
   cheki: "チェキ枚数",
   newFans: "新規動員数",
   newPhoto: "新規写メ枚数",
-  online: "オンライン",
+  online: "オンラインチェキ券枚数",
 };
 
 const pages = {
@@ -77,6 +77,7 @@ document.getElementById("detailMode").addEventListener("change", render);
 document.getElementById("detailMonth").addEventListener("change", render);
 document.getElementById("detailYear").addEventListener("change", render);
 document.getElementById("detailDay").addEventListener("change", render);
+document.querySelectorAll("form").forEach((form) => form.addEventListener("keydown", preventEnterSubmit));
 
 document.getElementById("liveSaleForm").addEventListener("submit", (event) => {
   event.preventDefault();
@@ -165,6 +166,7 @@ document.getElementById("settingsForm").addEventListener("submit", (event) => {
 render();
 startAutoSync();
 showFileModeWarning();
+initPullToRefresh();
 
 function loadState() {
   const fallback = {
@@ -325,6 +327,71 @@ function showFileModeWarning() {
   document.querySelector(".main").prepend(warning);
 }
 
+function preventEnterSubmit(event) {
+  if (event.key !== "Enter") return;
+  if (event.target.tagName === "TEXTAREA") return;
+  event.preventDefault();
+}
+
+function initPullToRefresh() {
+  if (!("ontouchstart" in window)) return;
+  const indicator = document.createElement("div");
+  indicator.className = "pull-refresh-indicator";
+  indicator.textContent = "下に引いて更新";
+  document.body.appendChild(indicator);
+
+  let startY = 0;
+  let distance = 0;
+
+  window.addEventListener(
+    "touchstart",
+    (event) => {
+      if (window.scrollY > 0) return;
+      startY = event.touches[0].clientY;
+      distance = 0;
+    },
+    { passive: true },
+  );
+
+  window.addEventListener(
+    "touchmove",
+    (event) => {
+      if (window.scrollY > 0 || !startY) return;
+      distance = Math.max(0, event.touches[0].clientY - startY);
+      if (distance > 24) {
+        indicator.classList.add("show");
+        indicator.textContent = distance > 96 ? "離して更新" : "下に引いて更新";
+      }
+    },
+    { passive: true },
+  );
+
+  window.addEventListener("touchend", () => {
+    if (distance > 96) {
+      refreshToLatest(indicator);
+    } else {
+      indicator.classList.remove("show");
+    }
+    startY = 0;
+    distance = 0;
+  });
+}
+
+async function refreshToLatest(indicator) {
+  indicator.textContent = "更新中...";
+  try {
+    if ("caches" in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((key) => key.startsWith("hyakki-ledger-")).map((key) => caches.delete(key)));
+    }
+    const registration = await navigator.serviceWorker?.getRegistration?.();
+    await registration?.update?.();
+  } catch {
+    // Reloading still fetches the latest index when cache clearing is unavailable.
+  }
+  location.href = `${location.origin}${location.pathname}?refresh=${Date.now()}`;
+}
+
 function showSaveToast(message) {
   let toast = document.getElementById("saveToast");
   if (!toast) {
@@ -454,7 +521,7 @@ function addSale(sale) {
 }
 
 function renderSalesTables() {
-  renderSalesTable("recentSalesTable", [...memberSales()].sort(byNewest).slice(0, 12));
+  renderSalesTable("recentSalesTable", [...memberSales()].sort(byNewest).slice(0, 12), { editable: true });
 }
 
 function renderMonthly() {
@@ -466,6 +533,8 @@ function renderMonthly() {
   document.getElementById("monthlyRevenue").textContent = yen.format(current.revenue);
   document.getElementById("monthlyBack").textContent = yen.format(current.liveBack);
   document.getElementById("monthlyOnline").textContent = yen.format(current.onlineRevenue);
+  document.getElementById("monthlyOther").textContent = yen.format(current.otherRevenue);
+  document.getElementById("monthlyIncome").textContent = yen.format(current.incomeTotal);
   renderProgressPie("monthlyTicketProgressPie", "monthlyTicketProgressText", current.ticketTotal, goal.ticketGoal, "枚");
   renderProgressPie("monthlyAttendanceProgressPie", "monthlyAttendanceProgressText", current.attendance, goal.attendanceGoal, "人");
   renderMonthlyGoalForm(month, goal);
@@ -489,7 +558,7 @@ function renderMonthly() {
     "monthlyComparison",
     ["attendance", "cheki", "newFans", "newPhoto", "online"].map((key) => [
       metricLabels[key],
-      formatDelta(current[key] - previous[key], key === "online"),
+      formatDelta(current[key] - previous[key], false),
     ]),
   );
 
@@ -660,6 +729,7 @@ function calculateStats(rows) {
     onlineTickets: 0,
     otherRevenue: 0,
     otherTickets: 0,
+    incomeTotal: 0,
     attendance: 0,
     cheki: 0,
     newFans: 0,
@@ -693,7 +763,7 @@ function calculateStats(rows) {
     } else if (sale.channel === "online") {
       stats.onlineRevenue += amount;
       stats.onlineTickets += tickets;
-      stats.online += amount;
+      stats.online += tickets;
       const name = product?.name || "削除済み";
       stats.onlineProductCounts[name] = (stats.onlineProductCounts[name] || 0) + sale.quantity;
     } else if (sale.channel === "other") {
@@ -705,6 +775,7 @@ function calculateStats(rows) {
   });
 
   stats.liveBack = Math.round(stats.ticketTotal * tierRate(state.settings.backTiers, stats.ticketTotal));
+  stats.incomeTotal = stats.liveBack + stats.onlineRevenue + stats.otherRevenue;
   return stats;
 }
 
@@ -741,11 +812,11 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNumber(sale.quantity)}</td>
               <td>${formatNumber(saleTickets(sale))}</td>
               <td>${yen.format(saleAmount(sale))}</td>
-              <td>${escapeHtml(sale.note)}</td>
+              <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="secondary mini-button" onclick="toggleSaleEditor('${sale.id}')">編集</button>` : ""}
-                  <button class="mini-danger" onclick="removeItem('sales', '${sale.id}')">削除</button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集">✎</button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除">🗑</button>
                 </div>
               </td>
             </tr>
@@ -770,7 +841,7 @@ function saleEditRow(sale) {
           <label>任意金額<input name="amountOverride" type="number" min="0" step="1" value="${sale.amountOverride ?? ""}" placeholder="その他の金額" /></label>
           <label>新規動員<input name="newFans" type="number" min="0" step="1" value="${Number(sale.newFans || 0)}" /></label>
           <label>新規写メ<input name="newPhoto" type="number" min="0" step="1" value="${Number(sale.newPhoto || 0)}" /></label>
-          <label class="wide">メモ<input name="note" value="${escapeAttribute(sale.note || "")}" /></label>
+          <label class="wide">メモ<textarea name="note" rows="3">${escapeHtml(sale.note || "")}</textarea></label>
           <button class="primary" type="submit">保存</button>
         </form>
       </td>
@@ -809,6 +880,10 @@ function updateSale(event, saleId) {
   sale.newPhoto = Math.max(0, Math.trunc(Number(form.get("newPhoto") || 0)));
   sale.note = String(form.get("note") || "").trim();
   saveAndRender();
+}
+
+function formatNote(note) {
+  return escapeHtml(note || "").replaceAll("\n", "<br>");
 }
 
 function renderStatRows(targetId, rows) {
