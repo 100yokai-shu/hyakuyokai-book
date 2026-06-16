@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=14" />
-    <link rel="apple-touch-icon" href="icon.svg?v=14" />
-    <link rel="stylesheet" href="style.css?v=14" />
+    <link rel="manifest" href="manifest.json?v=15" />
+    <link rel="apple-touch-icon" href="icon.svg?v=15" />
+    <link rel="stylesheet" href="style.css?v=15" />
   </head>
   <body>
     <div class="app">
@@ -29,7 +29,6 @@
           <button class="tab active" data-tab="sales">売上入力</button>
           <button class="tab" data-tab="monthly">月間成績</button>
           <button class="tab" data-tab="annual">年間成績</button>
-          <button class="tab" data-tab="detail">詳細集計</button>
           <button class="tab" data-tab="products">商品管理</button>
           <button class="tab" data-tab="settings">設定</button>
           <button class="tab" data-tab="data">データ</button>
@@ -149,30 +148,6 @@
             </section>
           </div>
 
-          <section class="work-area">
-            <div class="section-heading">
-              <h3>直近の入力</h3>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>日付</th>
-                    <th>区分</th>
-                    <th>宴</th>
-                    <th>動員</th>
-                    <th>商品</th>
-                    <th>数量</th>
-                    <th>チェキ券</th>
-                    <th>金額</th>
-                    <th>メモ</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody id="recentSalesTable"></tbody>
-              </table>
-            </div>
-          </section>
         </section>
 
         <section id="monthly" class="panel">
@@ -214,7 +189,7 @@
 
           <div class="metrics monthly-metrics">
             <article>
-              <span>バック総額</span>
+              <span>宴チェキバック</span>
               <strong id="monthlyBack">¥0</strong>
             </article>
             <article>
@@ -226,7 +201,7 @@
               <strong id="monthlyOther">¥0</strong>
             </article>
             <article>
-              <span>収入総額</span>
+              <span>バック合計</span>
               <strong id="monthlyIncome">¥0</strong>
             </article>
             <article>
@@ -256,13 +231,7 @@
             </section>
           </div>
 
-          <div class="grid three">
-            <section class="work-area">
-              <div class="section-heading">
-                <h3>前月比</h3>
-              </div>
-              <div id="monthlyComparison" class="summary-list"></div>
-            </section>
+          <div class="grid two">
             <section class="work-area">
               <div class="section-heading">
                 <h3>改善案</h3>
@@ -270,37 +239,7 @@
               <div id="aiSuggestions" class="suggestions"></div>
             </section>
           </div>
-        </section>
 
-        <section id="annual" class="panel">
-          <section class="work-area">
-            <div class="section-heading">
-              <h3>年選択</h3>
-            </div>
-            <div class="detail-controls">
-              <label>年<input id="annualYear" type="number" min="2000" max="2100" /></label>
-            </div>
-          </section>
-          <section class="work-area">
-            <div class="section-heading">
-              <div>
-                <h3>年間推移</h3>
-                <p>チェキ券枚数・動員・目標を月ごとに表示</p>
-              </div>
-            </div>
-            <div class="chart-wrap">
-              <canvas id="annualTrendChart" width="980" height="360"></canvas>
-            </div>
-            <div class="chart-legend">
-              <span><i class="legend-ticket"></i>チェキ券枚数</span>
-              <span><i class="legend-ticket-goal"></i>チェキ券目標</span>
-              <span><i class="legend-attendance"></i>動員</span>
-              <span><i class="legend-attendance-goal"></i>動員目標</span>
-            </div>
-          </section>
-        </section>
-
-        <section id="detail" class="panel">
           <section class="work-area">
             <div class="section-heading">
               <h3>期間選択</h3>
@@ -319,7 +258,7 @@
             </div>
           </section>
 
-          <div class="metrics">
+          <div class="metrics hidden">
             <article>
               <span>総売り上げ</span>
               <strong id="detailRevenue">¥0</strong>
@@ -329,7 +268,7 @@
               <strong id="detailTickets">0</strong>
             </article>
             <article>
-              <span>バック総額</span>
+              <span>宴チェキバック</span>
               <strong id="detailBack">¥0</strong>
             </article>
             <article>
@@ -338,7 +277,7 @@
             </article>
           </div>
 
-          <div class="grid two">
+          <div class="grid two hidden">
             <section class="work-area">
               <div class="section-heading">
                 <h3>宴</h3>
@@ -382,6 +321,40 @@
                 <tbody id="detailSalesTable"></tbody>
               </table>
             </div>
+          </section>
+        </section>
+
+        <section id="annual" class="panel">
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>年選択</h3>
+            </div>
+            <div class="detail-controls">
+              <label>年<input id="annualYear" type="number" min="2000" max="2100" /></label>
+            </div>
+          </section>
+          <section class="work-area">
+            <div class="section-heading">
+              <div>
+                <h3>年間推移</h3>
+                <p>チェキ券枚数・動員・目標を月ごとに表示</p>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="annualTrendChart" width="980" height="360"></canvas>
+            </div>
+            <div class="chart-legend">
+              <span><i class="legend-ticket"></i>チェキ券枚数</span>
+              <span><i class="legend-ticket-goal"></i>チェキ券目標</span>
+              <span><i class="legend-attendance"></i>動員</span>
+              <span><i class="legend-attendance-goal"></i>動員目標</span>
+            </div>
+          </section>
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>前月比</h3>
+            </div>
+            <div id="monthlyComparison" class="summary-list"></div>
           </section>
         </section>
 
@@ -495,6 +468,6 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=14"></script>
+    <script src="app.js?v=15"></script>
   </body>
 </html>

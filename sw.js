@@ -1,11 +1,13 @@
-const CACHE_NAME = "hyakki-ledger-v14";
+const CACHE_NAME = "hyakki-ledger-v15";
 const APP_FILES = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
   "./manifest.json",
-  "./icon.svg"
+  "./icon.svg",
+  "./edit-icon.png",
+  "./trash-icon.png"
 ];
 
 self.addEventListener("install", (event) => {

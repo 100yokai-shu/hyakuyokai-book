@@ -533,6 +533,13 @@ th {
   line-height: 1;
 }
 
+.icon-button img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  opacity: 0.78;
+}
+
 .delete-button {
   background: #fff0ef;
   color: var(--danger);

@@ -37,7 +37,6 @@ const pages = {
   sales: "売上入力",
   monthly: "月間成績",
   annual: "年間成績",
-  detail: "詳細集計",
   products: "商品管理",
   settings: "設定",
   data: "データ",
@@ -521,7 +520,7 @@ function addSale(sale) {
 }
 
 function renderSalesTables() {
-  renderSalesTable("recentSalesTable", [...memberSales()].sort(byNewest).slice(0, 12), { editable: true });
+  return;
 }
 
 function renderMonthly() {
@@ -540,7 +539,7 @@ function renderMonthly() {
   renderMonthlyGoalForm(month, goal);
 
   renderStatRows("liveMonthlyStats", [
-    ["バック総額", yen.format(current.liveBack)],
+    ["宴チェキバック", yen.format(current.liveBack)],
     ["動員数", formatNumber(current.attendance)],
     ["チェキ枚数", formatNumber(current.cheki)],
     ["新規動員数", formatNumber(current.newFans)],
@@ -611,7 +610,7 @@ function renderDetail() {
   document.getElementById("detailRows").textContent = rows.length.toLocaleString("ja-JP");
 
   renderStatRows("detailLiveStats", [
-    ["バック総額", yen.format(stats.liveBack)],
+    ["宴チェキバック", yen.format(stats.liveBack)],
     ["動員数", formatNumber(stats.attendance)],
     ["チェキ枚数", formatNumber(stats.cheki)],
     ["新規動員数", formatNumber(stats.newFans)],
@@ -815,8 +814,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集">✎</button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除">🗑</button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=15" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=15" alt="" /></button>
                 </div>
               </td>
             </tr>
