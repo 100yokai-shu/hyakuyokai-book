@@ -35,7 +35,7 @@ const metricLabels = {
 
 const pages = {
   sales: "売上入力",
-  monthly: "月間成績",
+  monthly: "成績詳細",
   annual: "年間成績",
   products: "商品管理",
   settings: "設定",
@@ -524,8 +524,9 @@ function renderSalesTables() {
 }
 
 function renderMonthly() {
+  syncMonthFilterToDetailPeriod();
   const month = document.getElementById("monthFilter").value || getInitialMonth();
-  const current = calculateStats(salesForMonth(month));
+  const current = calculateStats(salesForDetail());
   const previous = calculateStats(salesForMonth(previousMonth(month)));
   const goal = monthlyGoal(month);
 
@@ -567,6 +568,19 @@ function renderMonthly() {
 
 function monthlyGoal(month) {
   return state.settings.monthlyGoals?.[month] || { ticketGoal: 0, attendanceGoal: 0 };
+}
+
+function syncMonthFilterToDetailPeriod() {
+  const mode = document.getElementById("detailMode").value;
+  let month = document.getElementById("detailMonth").value || getInitialMonth();
+  if (mode === "day") {
+    month = (document.getElementById("detailDay").value || today()).slice(0, 7);
+  }
+  if (mode === "year") {
+    const year = document.getElementById("detailYear").value || getInitialMonth().slice(0, 4);
+    month = `${year}-01`;
+  }
+  document.getElementById("monthFilter").value = month;
 }
 
 function renderMonthlyGoalForm(month, goal) {
@@ -814,8 +828,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=15" alt="" /></button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=15" alt="" /></button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=16" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=16" alt="" /></button>
                 </div>
               </td>
             </tr>

@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=15" />
-    <link rel="apple-touch-icon" href="icon.svg?v=15" />
-    <link rel="stylesheet" href="style.css?v=15" />
+    <link rel="manifest" href="manifest.json?v=16" />
+    <link rel="apple-touch-icon" href="icon.svg?v=16" />
+    <link rel="stylesheet" href="style.css?v=16" />
   </head>
   <body>
     <div class="app">
@@ -27,7 +27,7 @@
         </div>
         <nav class="tabs" aria-label="メインメニュー">
           <button class="tab active" data-tab="sales">売上入力</button>
-          <button class="tab" data-tab="monthly">月間成績</button>
+          <button class="tab" data-tab="monthly">成績詳細</button>
           <button class="tab" data-tab="annual">年間成績</button>
           <button class="tab" data-tab="products">商品管理</button>
           <button class="tab" data-tab="settings">設定</button>
@@ -151,7 +151,25 @@
         </section>
 
         <section id="monthly" class="panel">
-          <div class="top-actions inline-filter">
+          <section class="work-area">
+            <div class="section-heading">
+              <h3>期間選択</h3>
+            </div>
+            <div class="detail-controls">
+              <label>表示単位
+                <select id="detailMode">
+                  <option value="month">月ごと</option>
+                  <option value="year">年ごと</option>
+                  <option value="day">日ごと</option>
+                </select>
+              </label>
+              <label id="detailMonthLabel">年月<input id="detailMonth" type="month" /></label>
+              <label id="detailYearLabel">年<input id="detailYear" type="number" min="2000" max="2100" /></label>
+              <label id="detailDayLabel">年月日<input id="detailDay" type="date" /></label>
+            </div>
+          </section>
+
+          <div class="top-actions inline-filter hidden">
             <input id="monthFilter" type="month" aria-label="年月選択" />
           </div>
 
@@ -239,24 +257,6 @@
               <div id="aiSuggestions" class="suggestions"></div>
             </section>
           </div>
-
-          <section class="work-area">
-            <div class="section-heading">
-              <h3>期間選択</h3>
-            </div>
-            <div class="detail-controls">
-              <label>表示単位
-                <select id="detailMode">
-                  <option value="month">月ごと</option>
-                  <option value="year">年ごと</option>
-                  <option value="day">日ごと</option>
-                </select>
-              </label>
-              <label id="detailMonthLabel">年月<input id="detailMonth" type="month" /></label>
-              <label id="detailYearLabel">年<input id="detailYear" type="number" min="2000" max="2100" /></label>
-              <label id="detailDayLabel">年月日<input id="detailDay" type="date" /></label>
-            </div>
-          </section>
 
           <div class="metrics hidden">
             <article>
@@ -468,6 +468,6 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=15"></script>
+    <script src="app.js?v=16"></script>
   </body>
 </html>
