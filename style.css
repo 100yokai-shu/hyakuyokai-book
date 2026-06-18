@@ -941,6 +941,30 @@ th {
   align-items: end;
 }
 
+.performance-period,
+.performance-goals {
+  padding: 16px 18px;
+}
+
+.performance-period .section-heading,
+.performance-goals .section-heading {
+  margin-bottom: 12px;
+  padding-block: 11px;
+}
+
+.performance-period-controls {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.performance-goal-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.performance-goal-form .primary {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
 .hidden {
   display: none;
 }
@@ -1165,13 +1189,77 @@ body[data-theme="white"] .swatch-white span {
   .metrics,
   .form-grid,
   .detail-controls,
-  .goal-progress-grid,
   .sale-editor {
     grid-template-columns: 1fr;
   }
 
-  .progress-card {
-    align-items: flex-start;
+  .performance-period-controls,
+  .performance-goal-form,
+  .performance-progress-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .performance-period,
+  .performance-goals {
+    padding: 12px;
+  }
+
+  .performance-period .section-heading,
+  .performance-goals .section-heading {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+  }
+
+  .performance-period-controls,
+  .performance-goal-form {
+    gap: 8px;
+  }
+
+  .performance-period-controls label,
+  .performance-goal-form label {
+    font-size: 11px;
+  }
+
+  .performance-period-controls input,
+  .performance-period-controls select,
+  .performance-goal-form input {
+    min-height: 40px;
+    padding: 8px;
+    border-radius: 13px;
+  }
+
+  .performance-goal-form .primary {
+    width: 100%;
+    min-height: 38px;
+    padding-block: 8px;
+  }
+
+  .performance-progress-grid {
+    gap: 10px;
+  }
+
+  .performance-progress-grid .progress-card {
+    min-width: 0;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 8px;
+    text-align: center;
+  }
+
+  .performance-progress-grid .progress-pie {
+    width: 92px;
+    height: 92px;
+  }
+
+  .performance-progress-grid .progress-card p {
+    margin-top: 3px;
+    font-size: 16px;
+  }
+
+  .performance-progress-grid .progress-card span {
+    font-size: 12px;
   }
 
   .wide {

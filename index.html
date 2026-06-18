@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=16" />
-    <link rel="apple-touch-icon" href="icon.svg?v=16" />
-    <link rel="stylesheet" href="style.css?v=16" />
+    <link rel="manifest" href="manifest.json?v=17" />
+    <link rel="apple-touch-icon" href="icon.svg?v=17" />
+    <link rel="stylesheet" href="style.css?v=17" />
   </head>
   <body>
     <div class="app">
@@ -151,11 +151,11 @@
         </section>
 
         <section id="monthly" class="panel">
-          <section class="work-area">
+          <section class="work-area performance-period">
             <div class="section-heading">
               <h3>期間選択</h3>
             </div>
-            <div class="detail-controls">
+            <div class="detail-controls performance-period-controls">
               <label>表示単位
                 <select id="detailMode">
                   <option value="month">月ごと</option>
@@ -173,18 +173,18 @@
             <input id="monthFilter" type="month" aria-label="年月選択" />
           </div>
 
-          <section class="work-area">
+          <section class="work-area performance-goals">
             <div class="section-heading">
               <h3>月間目標</h3>
             </div>
-            <form id="monthlyGoalForm" class="form-grid">
+            <form id="monthlyGoalForm" class="form-grid performance-goal-form">
               <label>チェキ券目標<input name="ticketGoal" type="number" min="0" step="1" placeholder="例: 200" /></label>
               <label>動員目標<input name="attendanceGoal" type="number" min="0" step="1" placeholder="例: 100" /></label>
               <button type="submit" class="primary">目標を保存</button>
             </form>
           </section>
 
-          <div class="goal-progress-grid">
+          <div class="goal-progress-grid performance-progress-grid">
             <article class="progress-card">
               <div id="monthlyTicketProgressPie" class="progress-pie" style="--progress: 0%">
                 <strong>0%</strong>
@@ -468,6 +468,6 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=16"></script>
+    <script src="app.js?v=17"></script>
   </body>
 </html>
