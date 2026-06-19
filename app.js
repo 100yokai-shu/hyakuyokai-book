@@ -537,6 +537,7 @@ function renderMonthly() {
   document.getElementById("monthlyIncome").textContent = yen.format(current.incomeTotal);
   document.getElementById("monthlyAttendanceTotal").textContent = formatNumber(current.attendance);
   document.getElementById("monthlyAttendanceAverage").textContent = formatNumber(averageAttendance(current));
+  document.getElementById("monthlyNewFansTotal").textContent = formatNumber(current.newFans);
   document.getElementById("monthlyTicketTotal").textContent = formatNumber(current.ticketTotal);
   renderProgressPie("monthlyTicketProgressPie", "monthlyTicketProgressText", current.ticketTotal, goal.ticketGoal, "枚");
   renderProgressPie("monthlyAttendanceProgressPie", "monthlyAttendanceProgressText", current.attendance, goal.attendanceGoal, "人");
@@ -544,7 +545,6 @@ function renderMonthly() {
 
   renderPerformanceStats("liveMonthlyStats", [
     ["チェキ", current.cheki, "枚", "primary"],
-    ["新規動員", current.newFans, "人", "secondary"],
     ["新規写メ", current.newPhoto, "枚", "secondary"],
   ]);
 
@@ -838,8 +838,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=20" alt="" /></button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=20" alt="" /></button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=21" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=21" alt="" /></button>
                 </div>
               </td>
             </tr>

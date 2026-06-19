@@ -741,6 +741,10 @@ th {
   line-height: 1;
 }
 
+.performance-newfans-stat {
+  grid-column: 2;
+}
+
 .performance-primary-stat small,
 .performance-secondary-stat small,
 .performance-ticket-heading small,
@@ -1441,6 +1445,10 @@ body[data-theme="white"] .swatch-white span {
 
   .performance-total-money {
     justify-items: start;
+  }
+
+  .performance-newfans-stat {
+    grid-column: auto;
   }
 
   .performance-primary-stat,
