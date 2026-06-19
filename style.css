@@ -693,6 +693,7 @@ th {
   font-weight: 900;
 }
 
+.performance-livecount,
 .performance-attendance,
 .performance-tickets {
   display: grid;
@@ -742,7 +743,7 @@ th {
 }
 
 .performance-livecount-stat {
-  grid-column: 1 / -1;
+  grid-column: auto;
 }
 
 .performance-newfans-stat {
