@@ -535,24 +535,28 @@ function renderMonthly() {
   document.getElementById("monthlyOnline").textContent = yen.format(current.onlineRevenue);
   document.getElementById("monthlyOther").textContent = yen.format(current.otherRevenue);
   document.getElementById("monthlyIncome").textContent = yen.format(current.incomeTotal);
+  document.getElementById("monthlyAttendanceTotal").textContent = formatNumber(current.attendance);
+  document.getElementById("monthlyAttendanceAverage").textContent = formatNumber(averageAttendance(current));
+  document.getElementById("monthlyTicketTotal").textContent = formatNumber(current.ticketTotal);
   renderProgressPie("monthlyTicketProgressPie", "monthlyTicketProgressText", current.ticketTotal, goal.ticketGoal, "枚");
   renderProgressPie("monthlyAttendanceProgressPie", "monthlyAttendanceProgressText", current.attendance, goal.attendanceGoal, "人");
   renderMonthlyGoalForm(month, goal);
 
-  renderStatRows("liveMonthlyStats", [
-    ["宴チェキバック", yen.format(current.liveBack)],
-    ["動員数", formatNumber(current.attendance)],
-    ["チェキ枚数", formatNumber(current.cheki)],
-    ["新規動員数", formatNumber(current.newFans)],
-    ["新規写メ枚数", formatNumber(current.newPhoto)],
+  renderPerformanceStats("liveMonthlyStats", [
+    ["チェキ", current.cheki, "枚", "primary"],
+    ["新規動員", current.newFans, "人", "secondary"],
+    ["新規写メ", current.newPhoto, "枚", "secondary"],
   ]);
 
-  const onlineRows = [["オンライン特典チェキ券枚数", formatNumber(current.onlineTickets)]].concat(
-    Object.entries(current.onlineProductCounts).map(([name, count]) => [`${name}`, `${formatNumber(count)}個`]),
+  const onlineRows = [["オンライン計", current.onlineTickets, "枚", "primary"]].concat(
+    Object.entries(current.onlineProductCounts).map(([name, tickets]) => [name, tickets, "枚", "secondary"]),
   );
-  renderStatRows("onlineMonthlyStats", onlineRows);
+  renderPerformanceStats("onlineMonthlyStats", onlineRows);
 
-  renderStatRows("otherMonthlyStats", [["その他チェキ券枚数", formatNumber(current.otherTickets)]]);
+  const otherRows = [["その他計", current.otherTickets, "枚", "primary"]].concat(
+    Object.entries(current.otherProductCounts).map(([name, tickets]) => [name, tickets, "枚", "secondary"]),
+  );
+  renderPerformanceStats("otherMonthlyStats", otherRows);
 
   renderStatRows(
     "monthlyComparison",
@@ -568,6 +572,10 @@ function renderMonthly() {
 
 function monthlyGoal(month) {
   return state.settings.monthlyGoals?.[month] || { ticketGoal: 0, attendanceGoal: 0 };
+}
+
+function averageAttendance(stats) {
+  return stats.liveEntries ? Math.round((stats.attendance / stats.liveEntries) * 10) / 10 : 0;
 }
 
 function syncMonthFilterToDetailPeriod() {
@@ -744,6 +752,7 @@ function calculateStats(rows) {
     otherTickets: 0,
     incomeTotal: 0,
     attendance: 0,
+    liveEntries: 0,
     cheki: 0,
     newFans: 0,
     newPhoto: 0,
@@ -761,6 +770,7 @@ function calculateStats(rows) {
 
     if (sale.channel === "live") {
       stats.liveRevenue += amount;
+      stats.liveEntries += 1;
       stats.attendance += Number(sale.attendance || 0);
       stats.newFans += Number(sale.newFans || 0);
       stats.newPhoto += Number(sale.newPhoto || 0);
@@ -778,12 +788,12 @@ function calculateStats(rows) {
       stats.onlineTickets += tickets;
       stats.online += tickets;
       const name = product?.name || "削除済み";
-      stats.onlineProductCounts[name] = (stats.onlineProductCounts[name] || 0) + sale.quantity;
+      stats.onlineProductCounts[name] = (stats.onlineProductCounts[name] || 0) + tickets;
     } else if (sale.channel === "other") {
       stats.otherRevenue += amount;
       stats.otherTickets += tickets;
       const name = product?.name || "削除済み";
-      stats.otherProductCounts[name] = (stats.otherProductCounts[name] || 0) + sale.quantity;
+      stats.otherProductCounts[name] = (stats.otherProductCounts[name] || 0) + tickets;
     }
   });
 
@@ -828,8 +838,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=17" alt="" /></button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=17" alt="" /></button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=20" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=20" alt="" /></button>
                 </div>
               </td>
             </tr>
@@ -910,6 +920,22 @@ function renderStatRows(targetId, rows) {
         </div>
       `,
         )
+        .join("")
+    : emptyHtml();
+}
+
+function renderPerformanceStats(targetId, rows) {
+  document.getElementById(targetId).innerHTML = rows.length
+    ? rows
+        .map(([label, value, unit = "", emphasis = "secondary"]) => {
+          const formatted = unit === "円" ? yen.format(value) : formatNumber(value);
+          return `
+            <div class="performance-stat-row ${emphasis}">
+              <span>${escapeHtml(label)}</span>
+              <strong>${escapeHtml(formatted)}${unit && unit !== "円" ? `<small>${escapeHtml(unit)}</small>` : ""}</strong>
+            </div>
+          `;
+        })
         .join("")
     : emptyHtml();
 }

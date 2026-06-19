@@ -693,6 +693,177 @@ th {
   font-weight: 900;
 }
 
+.performance-attendance,
+.performance-tickets {
+  display: grid;
+  gap: 14px;
+}
+
+.performance-attendance-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.performance-primary-stat,
+.performance-secondary-stat {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.performance-primary-stat span,
+.performance-secondary-stat span,
+.performance-ticket-heading span,
+.performance-money-row span,
+.performance-revenue-row span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.performance-primary-stat p,
+.performance-secondary-stat p,
+.performance-ticket-heading p {
+  margin: 4px 0 0;
+  color: var(--ink);
+}
+
+.performance-primary-stat strong,
+.performance-ticket-heading strong {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.performance-secondary-stat strong {
+  font-size: 25px;
+  line-height: 1;
+}
+
+.performance-primary-stat small,
+.performance-secondary-stat small,
+.performance-ticket-heading small,
+.performance-stat-row small {
+  margin-left: 3px;
+  color: var(--muted);
+  font-size: 0.48em;
+  font-weight: 900;
+}
+
+.performance-ticket-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  padding: 4px 2px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.performance-total-money {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+}
+
+.performance-total-money strong {
+  color: var(--ink);
+  font-size: 22px;
+}
+
+.performance-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.performance-breakdown-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.54);
+}
+
+.performance-breakdown-card h3 {
+  font-size: 18px;
+}
+
+.performance-stat-list {
+  display: grid;
+  gap: 8px;
+}
+
+.performance-stat-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 9px 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.performance-stat-row span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.performance-stat-row strong {
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1;
+}
+
+.performance-stat-row.primary {
+  background: var(--accent-soft);
+}
+
+.performance-stat-row.primary span {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.performance-stat-row.primary strong {
+  color: var(--accent-dark);
+  font-size: 25px;
+}
+
+.performance-stat-row.money {
+  margin-top: 2px;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+
+.performance-stat-row.money strong {
+  font-size: 15px;
+}
+
+.performance-money-row,
+.performance-revenue-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.performance-money-row strong,
+.performance-revenue-row strong {
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.performance-revenue-row {
+  margin-top: 0;
+  padding: 12px 2px 0;
+}
+
 .breakdown-total {
   display: grid;
   gap: 8px;
@@ -966,7 +1137,7 @@ th {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .suggestions {
@@ -1260,6 +1431,32 @@ body[data-theme="white"] .swatch-white span {
 
   .performance-progress-grid .progress-card span {
     font-size: 12px;
+  }
+
+  .performance-attendance-grid,
+  .performance-breakdown-grid,
+  .performance-ticket-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .performance-total-money {
+    justify-items: start;
+  }
+
+  .performance-primary-stat,
+  .performance-secondary-stat,
+  .performance-breakdown-card {
+    padding: 12px;
+  }
+
+  .performance-primary-stat strong,
+  .performance-ticket-heading strong {
+    font-size: 30px;
+  }
+
+  .performance-secondary-stat strong,
+  .performance-stat-row.primary strong {
+    font-size: 22px;
   }
 
   .wide {

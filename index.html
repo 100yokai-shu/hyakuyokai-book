@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=17" />
-    <link rel="apple-touch-icon" href="icon.svg?v=17" />
-    <link rel="stylesheet" href="style.css?v=17" />
+    <link rel="manifest" href="manifest.json?v=20" />
+    <link rel="apple-touch-icon" href="icon.svg?v=20" />
+    <link rel="stylesheet" href="style.css?v=20" />
   </head>
   <body>
     <div class="app">
@@ -205,49 +205,71 @@
             </article>
           </div>
 
-          <div class="metrics monthly-metrics">
-            <article>
-              <span>宴チェキバック</span>
-              <strong id="monthlyBack">¥0</strong>
-            </article>
-            <article>
-              <span>オンライン</span>
-              <strong id="monthlyOnline">¥0</strong>
-            </article>
-            <article>
-              <span>その他売り上げ</span>
-              <strong id="monthlyOther">¥0</strong>
-            </article>
-            <article>
-              <span>バック合計</span>
-              <strong id="monthlyIncome">¥0</strong>
-            </article>
-            <article>
+          <section class="work-area performance-attendance">
+            <div class="section-heading">
+              <h3>動員</h3>
+            </div>
+            <div class="performance-attendance-grid">
+              <div class="performance-primary-stat">
+                <span>動員計</span>
+                <p><strong id="monthlyAttendanceTotal">0</strong><small>人</small></p>
+              </div>
+              <div class="performance-secondary-stat">
+                <span>平均動員</span>
+                <p><strong id="monthlyAttendanceAverage">0</strong><small>人</small></p>
+              </div>
+            </div>
+          </section>
+
+          <section class="work-area performance-tickets">
+            <div class="section-heading">
+              <h3>チェキ券</h3>
+            </div>
+            <div class="performance-ticket-heading">
+              <div>
+                <span>チェキ券枚数計</span>
+                <p><strong id="monthlyTicketTotal">0</strong><small>枚</small></p>
+              </div>
+              <div class="performance-total-money">
+                <span>バック合計</span>
+                <strong id="monthlyIncome">¥0</strong>
+              </div>
+            </div>
+
+            <div class="performance-breakdown-grid">
+              <article class="performance-breakdown-card performance-live-card">
+                <h3>宴</h3>
+                <div id="liveMonthlyStats" class="performance-stat-list"></div>
+                <div class="performance-money-row">
+                  <span>宴チェキバック</span>
+                  <strong id="monthlyBack">¥0</strong>
+                </div>
+              </article>
+
+              <article class="performance-breakdown-card">
+                <h3>オンライン</h3>
+                <div id="onlineMonthlyStats" class="performance-stat-list"></div>
+                <div class="performance-money-row">
+                  <span>オンライン収入</span>
+                  <strong id="monthlyOnline">¥0</strong>
+                </div>
+              </article>
+
+              <article class="performance-breakdown-card">
+                <h3>その他</h3>
+                <div id="otherMonthlyStats" class="performance-stat-list"></div>
+                <div class="performance-money-row">
+                  <span>その他売り上げ</span>
+                  <strong id="monthlyOther">¥0</strong>
+                </div>
+              </article>
+            </div>
+
+            <div class="performance-revenue-row">
               <span>総売り上げ</span>
               <strong id="monthlyRevenue">¥0</strong>
-            </article>
-          </div>
-
-          <div class="grid three">
-            <section class="work-area">
-              <div class="section-heading">
-                <h3>宴 当月</h3>
-              </div>
-              <div id="liveMonthlyStats" class="summary-list"></div>
-            </section>
-            <section class="work-area">
-              <div class="section-heading">
-                <h3>オンライン</h3>
-              </div>
-              <div id="onlineMonthlyStats" class="summary-list"></div>
-            </section>
-            <section class="work-area">
-              <div class="section-heading">
-                <h3>その他</h3>
-              </div>
-              <div id="otherMonthlyStats" class="summary-list"></div>
-            </section>
-          </div>
+            </div>
+          </section>
 
           <div class="grid two">
             <section class="work-area">
@@ -468,6 +490,6 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=17"></script>
+    <script src="app.js?v=20"></script>
   </body>
 </html>
