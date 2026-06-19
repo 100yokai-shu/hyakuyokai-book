@@ -535,10 +535,12 @@ function renderMonthly() {
   document.getElementById("monthlyOnline").textContent = yen.format(current.onlineRevenue);
   document.getElementById("monthlyOther").textContent = yen.format(current.otherRevenue);
   document.getElementById("monthlyIncome").textContent = yen.format(current.incomeTotal);
+  document.getElementById("monthlyLiveCount").textContent = formatNumber(current.liveEntries);
   document.getElementById("monthlyAttendanceTotal").textContent = formatNumber(current.attendance);
   document.getElementById("monthlyAttendanceAverage").textContent = formatNumber(averageAttendance(current));
   document.getElementById("monthlyNewFansTotal").textContent = formatNumber(current.newFans);
   document.getElementById("monthlyTicketTotal").textContent = formatNumber(current.ticketTotal);
+  document.getElementById("monthlyChekiAverage").textContent = formatNumber(averageChekiPerLive(current));
   renderProgressPie("monthlyTicketProgressPie", "monthlyTicketProgressText", current.ticketTotal, goal.ticketGoal, "枚");
   renderProgressPie("monthlyAttendanceProgressPie", "monthlyAttendanceProgressText", current.attendance, goal.attendanceGoal, "人");
   renderMonthlyGoalForm(month, goal);
@@ -576,6 +578,10 @@ function monthlyGoal(month) {
 
 function averageAttendance(stats) {
   return stats.liveEntries ? Math.round((stats.attendance / stats.liveEntries) * 10) / 10 : 0;
+}
+
+function averageChekiPerLive(stats) {
+  return stats.liveEntries ? Math.round((stats.cheki / stats.liveEntries) * 10) / 10 : 0;
 }
 
 function syncMonthFilterToDetailPeriod() {
@@ -838,8 +844,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=21" alt="" /></button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=21" alt="" /></button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=22" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=22" alt="" /></button>
                 </div>
               </td>
             </tr>

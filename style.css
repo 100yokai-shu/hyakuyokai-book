@@ -741,6 +741,10 @@ th {
   line-height: 1;
 }
 
+.performance-livecount-stat {
+  grid-column: 1 / -1;
+}
+
 .performance-newfans-stat {
   grid-column: 2;
 }
@@ -762,6 +766,18 @@ th {
   align-items: end;
   padding: 4px 2px 10px;
   border-bottom: 1px solid var(--line);
+}
+
+.performance-average-line {
+  margin-top: 6px !important;
+  color: var(--muted) !important;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.performance-average-line strong {
+  color: var(--ink);
+  font-size: 22px;
 }
 
 .performance-total-money {
