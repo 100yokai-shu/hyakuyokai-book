@@ -532,8 +532,8 @@ function renderMonthly() {
 
   document.getElementById("monthlyRevenue").textContent = yen.format(current.revenue);
   document.getElementById("monthlyBack").textContent = yen.format(current.liveBack);
-  document.getElementById("monthlyOnline").textContent = yen.format(current.onlineRevenue);
-  document.getElementById("monthlyOther").textContent = yen.format(current.otherRevenue);
+  document.getElementById("monthlyOnline").textContent = yen.format(current.onlineBack);
+  document.getElementById("monthlyOther").textContent = yen.format(current.otherBack);
   document.getElementById("monthlyIncome").textContent = yen.format(current.incomeTotal);
   document.getElementById("monthlyLiveCount").textContent = formatNumber(current.liveEntries);
   document.getElementById("monthlyAttendanceTotal").textContent = formatNumber(current.attendance);
@@ -753,8 +753,11 @@ function calculateStats(rows) {
     liveRevenue: 0,
     liveBack: 0,
     onlineRevenue: 0,
+    onlineBack: 0,
     onlineTickets: 0,
     otherRevenue: 0,
+    otherBack: 0,
+    otherManualBack: 0,
     otherTickets: 0,
     incomeTotal: 0,
     attendance: 0,
@@ -797,14 +800,20 @@ function calculateStats(rows) {
       stats.onlineProductCounts[name] = (stats.onlineProductCounts[name] || 0) + tickets;
     } else if (sale.channel === "other") {
       stats.otherRevenue += amount;
+      if (sale.amountOverride !== null && sale.amountOverride !== undefined && Number.isFinite(Number(sale.amountOverride))) {
+        stats.otherManualBack += Math.round(Number(sale.amountOverride));
+      }
       stats.otherTickets += tickets;
       const name = product?.name || "削除済み";
       stats.otherProductCounts[name] = (stats.otherProductCounts[name] || 0) + tickets;
     }
   });
 
-  stats.liveBack = Math.round(stats.ticketTotal * tierRate(state.settings.backTiers, stats.ticketTotal));
-  stats.incomeTotal = stats.liveBack + stats.onlineRevenue + stats.otherRevenue;
+  const backUnit = tierRate(state.settings.backTiers, stats.ticketTotal);
+  stats.liveBack = Math.round(stats.cheki * backUnit);
+  stats.onlineBack = Math.round(stats.onlineTickets * backUnit);
+  stats.otherBack = Math.round(stats.otherTickets * backUnit) + stats.otherManualBack;
+  stats.incomeTotal = stats.liveBack + stats.onlineBack + stats.otherBack;
   return stats;
 }
 
@@ -844,8 +853,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=23" alt="" /></button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=23" alt="" /></button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=24" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=24" alt="" /></button>
                 </div>
               </td>
             </tr>
