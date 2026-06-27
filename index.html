@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=24" />
-    <link rel="apple-touch-icon" href="icon.svg?v=24" />
-    <link rel="stylesheet" href="style.css?v=24" />
+    <link rel="manifest" href="manifest.json?v=25" />
+    <link rel="apple-touch-icon" href="icon.svg?v=25" />
+    <link rel="stylesheet" href="style.css?v=25" />
   </head>
   <body>
     <div class="app">
@@ -460,6 +460,23 @@
           <section class="work-area">
             <div class="section-heading">
               <div>
+                <h3>アカウント</h3>
+                <p>ログインした本人のデータだけをクラウド同期</p>
+              </div>
+            </div>
+            <form id="authForm" class="form-grid">
+              <label>メールアドレス<input name="email" type="email" autocomplete="email" placeholder="you@example.com" /></label>
+              <label>パスワード<input name="password" type="password" autocomplete="current-password" placeholder="6文字以上" /></label>
+              <button type="submit" class="primary">ログイン</button>
+              <button id="signUpButton" type="button" class="secondary">アカウント作成</button>
+              <button id="signOutButton" type="button" class="danger">ログアウト</button>
+            </form>
+            <p id="authStatus" class="hint">Supabase URL / anon key を保存するとログインできます。</p>
+          </section>
+
+          <section class="work-area">
+            <div class="section-heading">
+              <div>
                 <h3>Supabase同期</h3>
                 <p>PCとスマホで同じデータを使う</p>
               </div>
@@ -467,7 +484,6 @@
             <form id="syncForm" class="form-grid">
               <label class="wide">Supabase URL<input name="url" placeholder="https://xxxx.supabase.co" /></label>
               <label class="wide">anon key<input name="anonKey" placeholder="eyJ..." /></label>
-              <label>自分専用同期ID<input name="syncId" placeholder="自動生成されます" /></label>
               <label>自動同期
                 <select name="autoSync">
                   <option value="off">OFF</option>
@@ -480,7 +496,7 @@
               <button id="pullCloud" class="secondary">クラウドから読み込み</button>
               <button id="pushCloud" class="primary">クラウドへ保存</button>
             </div>
-            <p id="syncStatus" class="hint">自分のPC・スマホだけ同じ同期IDを使ってください。他メンバーとは別IDにするとデータが混ざりません。</p>
+            <p id="syncStatus" class="hint">ログインしたアカウントごとにクラウドデータが分かれます。他メンバーのデータとは混ざりません。</p>
           </section>
 
           <section class="work-area">
@@ -502,6 +518,6 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=24"></script>
+    <script src="app.js?v=25"></script>
   </body>
 </html>

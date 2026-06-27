@@ -1,6 +1,7 @@
 const STORAGE_KEY = "yokai-sales-ledger-v2";
 const SYNC_CONFIG_KEY = "yokai-sales-sync-config-v1";
 const PERSONAL_SYNC_ID_KEY = "yokai-sales-personal-sync-id-v1";
+const AUTH_SESSION_KEY = "yokai-sales-auth-session-v1";
 const STORAGE_SCHEMA_VERSION = 1;
 
 const yen = new Intl.NumberFormat("ja-JP", {
@@ -44,6 +45,7 @@ const pages = {
 
 const state = loadState();
 const syncConfig = loadSyncConfig();
+let authSession = loadAuthSession();
 let syncInterval = null;
 let syncSaveTimer = null;
 
@@ -66,6 +68,9 @@ document.getElementById("exportSalesCsv")?.addEventListener("click", exportSales
 document.getElementById("exportJson").addEventListener("click", exportJson);
 document.getElementById("importJson").addEventListener("change", importJson);
 document.getElementById("clearData").addEventListener("click", clearData);
+document.getElementById("authForm").addEventListener("submit", signIn);
+document.getElementById("signUpButton").addEventListener("click", signUp);
+document.getElementById("signOutButton").addEventListener("click", signOut);
 document.getElementById("syncForm").addEventListener("submit", saveSyncSettings);
 document.getElementById("pullCloud").addEventListener("click", pullCloud);
 document.getElementById("pushCloud").addEventListener("click", () => pushCloud(true));
@@ -225,6 +230,20 @@ function loadSyncConfig() {
   }
 }
 
+function loadAuthSession() {
+  try {
+    return JSON.parse(localStorage.getItem(AUTH_SESSION_KEY)) || null;
+  } catch {
+    return null;
+  }
+}
+
+function saveAuthSession(session) {
+  authSession = session;
+  if (session) localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+  else localStorage.removeItem(AUTH_SESSION_KEY);
+}
+
 function getPersonalSyncId() {
   const saved = localStorage.getItem(PERSONAL_SYNC_ID_KEY);
   if (saved) return saved;
@@ -315,6 +334,7 @@ function render() {
   renderDetail();
   renderSettings();
   renderPalette();
+  renderAuthSettings();
   renderSyncSettings();
 }
 
@@ -328,6 +348,7 @@ function showFileModeWarning() {
 
 function preventEnterSubmit(event) {
   if (event.key !== "Enter") return;
+  if (event.currentTarget.id === "authForm") return;
   if (event.target.tagName === "TEXTAREA") return;
   event.preventDefault();
 }
@@ -853,8 +874,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=24" alt="" /></button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=24" alt="" /></button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=25" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=25" alt="" /></button>
                 </div>
               </td>
             </tr>
@@ -1019,8 +1040,24 @@ function renderSyncSettings() {
   const form = document.getElementById("syncForm");
   form.elements.url.value = syncConfig.url || "";
   form.elements.anonKey.value = syncConfig.anonKey || "";
-  form.elements.syncId.value = syncConfig.syncId || getPersonalSyncId();
   form.elements.autoSync.value = syncConfig.autoSync || "off";
+}
+
+function renderAuthSettings() {
+  const status = document.getElementById("authStatus");
+  const signOutButton = document.getElementById("signOutButton");
+  if (!syncConfig.url || !syncConfig.anonKey) {
+    status.textContent = "先にSupabase URL / anon keyを保存してください。";
+    signOutButton.disabled = true;
+    return;
+  }
+  if (authSession?.user?.email) {
+    status.textContent = `${authSession.user.email} でログイン中です。`;
+    signOutButton.disabled = false;
+    return;
+  }
+  status.textContent = "未ログインです。アカウント作成またはログインしてください。";
+  signOutButton.disabled = true;
 }
 
 function saveSyncSettings(event) {
@@ -1028,12 +1065,134 @@ function saveSyncSettings(event) {
   const form = new FormData(event.target);
   syncConfig.url = normalizeSupabaseUrl(form.get("url"));
   syncConfig.anonKey = String(form.get("anonKey") || "").trim();
-  syncConfig.syncId = String(form.get("syncId") || getPersonalSyncId()).trim();
   syncConfig.autoSync = form.get("autoSync");
   localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(syncConfig));
-  renderSyncSettings();
+  render();
   setSyncStatus("同期設定を保存しました。URLはProject URL形式に補正しました。");
   startAutoSync();
+}
+
+function authReady() {
+  return Boolean(syncConfig.url && syncConfig.anonKey);
+}
+
+function currentUserId() {
+  return authSession?.user?.id || "";
+}
+
+function supabaseAuthUrl(path) {
+  syncConfig.url = normalizeSupabaseUrl(syncConfig.url);
+  return `${syncConfig.url}/auth/v1/${path}`;
+}
+
+function authHeaders() {
+  return {
+    apikey: syncConfig.anonKey,
+    "Content-Type": "application/json",
+  };
+}
+
+async function signUp() {
+  if (!authReady()) {
+    setAuthStatus("先にSupabase URL / anon keyを保存してください。");
+    return;
+  }
+  const form = new FormData(document.getElementById("authForm"));
+  const email = String(form.get("email") || "").trim();
+  const password = String(form.get("password") || "");
+  if (!email || !password) {
+    setAuthStatus("メールアドレスとパスワードを入力してください。");
+    return;
+  }
+  try {
+    setAuthStatus("アカウント作成中...");
+    const response = await fetch(supabaseAuthUrl("signup"), {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ email, password }),
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(JSON.stringify(payload));
+    if (payload.access_token) {
+      saveAuthPayload(payload);
+      setAuthStatus(`${payload.user?.email || email} でログインしました。`);
+      await pullCloud();
+    } else {
+      setAuthStatus("アカウントを作成しました。確認メールが届いた場合は、メール確認後にログインしてください。");
+    }
+    render();
+  } catch (error) {
+    setAuthStatus(authErrorMessage("作成失敗", error));
+  }
+}
+
+async function signIn(event) {
+  event.preventDefault();
+  if (!authReady()) {
+    setAuthStatus("先にSupabase URL / anon keyを保存してください。");
+    return;
+  }
+  const form = new FormData(event.target);
+  const email = String(form.get("email") || "").trim();
+  const password = String(form.get("password") || "");
+  if (!email || !password) {
+    setAuthStatus("メールアドレスとパスワードを入力してください。");
+    return;
+  }
+  try {
+    setAuthStatus("ログイン中...");
+    const response = await fetch(supabaseAuthUrl("token?grant_type=password"), {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ email, password }),
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(JSON.stringify(payload));
+    saveAuthPayload(payload);
+    setAuthStatus(`${payload.user?.email || email} でログインしました。`);
+    render();
+    await pullCloud();
+  } catch (error) {
+    setAuthStatus(authErrorMessage("ログイン失敗", error));
+  }
+}
+
+async function signOut() {
+  saveAuthSession(null);
+  render();
+  setAuthStatus("ログアウトしました。");
+  setSyncStatus("ログアウト中はクラウド同期できません。");
+}
+
+function saveAuthPayload(payload) {
+  saveAuthSession({
+    access_token: payload.access_token,
+    refresh_token: payload.refresh_token,
+    expires_at: Math.floor(Date.now() / 1000) + Number(payload.expires_in || 3600),
+    user: payload.user,
+  });
+}
+
+async function ensureAuthSession() {
+  if (!authSession?.access_token) return null;
+  const expiresAt = Number(authSession.expires_at || 0);
+  if (!authSession.refresh_token || expiresAt - Math.floor(Date.now() / 1000) > 60) return authSession;
+  const response = await fetch(supabaseAuthUrl("token?grant_type=refresh_token"), {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ refresh_token: authSession.refresh_token }),
+  });
+  const payload = await response.json();
+  if (!response.ok) {
+    saveAuthSession(null);
+    throw new Error(JSON.stringify(payload));
+  }
+  saveAuthPayload(payload);
+  return authSession;
+}
+
+function setAuthStatus(message) {
+  document.getElementById("authStatus").textContent = message;
 }
 
 function startAutoSync() {
@@ -1049,7 +1208,7 @@ function queueCloudSave() {
 }
 
 function syncReady() {
-  return Boolean(syncConfig.url && syncConfig.anonKey && syncConfig.syncId);
+  return Boolean(syncConfig.url && syncConfig.anonKey && currentUserId() && authSession?.access_token);
 }
 
 function supabaseTableUrl(query = "") {
@@ -1058,13 +1217,13 @@ function supabaseTableUrl(query = "") {
 }
 
 function supabaseEndpoint() {
-  return supabaseTableUrl(`?id=eq.${encodeURIComponent(syncConfig.syncId)}`);
+  return supabaseTableUrl(`?id=eq.${encodeURIComponent(currentUserId())}`);
 }
 
 function syncHeaders(prefer = "") {
   const headers = {
     apikey: syncConfig.anonKey,
-    Authorization: `Bearer ${syncConfig.anonKey}`,
+    Authorization: `Bearer ${authSession?.access_token || syncConfig.anonKey}`,
     "Content-Type": "application/json",
   };
   if (prefer) headers.Prefer = prefer;
@@ -1073,10 +1232,11 @@ function syncHeaders(prefer = "") {
 
 async function pullCloud() {
   if (!syncReady()) {
-    setSyncStatus("Supabase URL / anon key / 自分専用同期IDを入力してください。");
+    setSyncStatus("Supabase URL / anon key を保存し、ログインしてください。");
     return;
   }
   try {
+    await ensureAuthSession();
     setSyncStatus("クラウドから読み込み中...");
     const response = await fetch(`${supabaseEndpoint()}&select=data,updated_at`, {
       headers: syncHeaders(),
@@ -1100,13 +1260,14 @@ async function pullCloud() {
 
 async function pushCloud(showSuccess) {
   if (!syncReady()) {
-    if (showSuccess) setSyncStatus("Supabase URL / anon key / 自分専用同期IDを入力してください。");
+    if (showSuccess) setSyncStatus("Supabase URL / anon key を保存し、ログインしてください。");
     return;
   }
   try {
+    await ensureAuthSession();
     if (showSuccess) setSyncStatus("クラウドへ保存中...");
     const payload = {
-      id: syncConfig.syncId,
+      id: currentUserId(),
       data: {
         sales: state.sales,
         products: state.products,
@@ -1140,7 +1301,20 @@ function syncErrorMessage(prefix, error) {
     if (payload.code === "42P01" || payload.message?.includes("ledger_sync")) {
       return `${prefix}: Supabaseに ledger_sync テーブルが見つかりません。supabase.sql をSQL Editorで実行してください。`;
     }
+    if (payload.code === "42501" || payload.message?.includes("row-level security")) {
+      return `${prefix}: ログイン権限またはRLS設定を確認してください。supabase.sql を再実行してください。`;
+    }
     return `${prefix}: ${payload.message || rawMessage}`;
+  } catch {
+    return `${prefix}: ${rawMessage}`;
+  }
+}
+
+function authErrorMessage(prefix, error) {
+  const rawMessage = error?.message || String(error);
+  try {
+    const payload = JSON.parse(rawMessage);
+    return `${prefix}: ${payload.msg || payload.message || rawMessage}`;
   } catch {
     return `${prefix}: ${rawMessage}`;
   }
