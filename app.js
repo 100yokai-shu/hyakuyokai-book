@@ -2,6 +2,7 @@ const STORAGE_KEY = "yokai-sales-ledger-v2";
 const SYNC_CONFIG_KEY = "yokai-sales-sync-config-v1";
 const PERSONAL_SYNC_ID_KEY = "yokai-sales-personal-sync-id-v1";
 const AUTH_SESSION_KEY = "yokai-sales-auth-session-v1";
+const LOCAL_BACKUP_KEY = "yokai-sales-ledger-backup-before-cloud-v1";
 const STORAGE_SCHEMA_VERSION = 1;
 
 const yen = new Intl.NumberFormat("ja-JP", {
@@ -171,6 +172,7 @@ render();
 startAutoSync();
 showFileModeWarning();
 initPullToRefresh();
+restoreAuthOnLoad();
 
 function loadState() {
   const fallback = {
@@ -874,8 +876,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=25" alt="" /></button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=25" alt="" /></button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=26" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=26" alt="" /></button>
                 </div>
               </td>
             </tr>
@@ -1052,7 +1054,7 @@ function renderAuthSettings() {
     return;
   }
   if (authSession?.user?.email) {
-    status.textContent = `${authSession.user.email} でログイン中です。`;
+    status.textContent = `${authSession.user.email} でログイン中です。ページを更新してもログイン状態は保持されます。`;
     signOutButton.disabled = false;
     return;
   }
@@ -1115,12 +1117,12 @@ async function signUp() {
     if (!response.ok) throw new Error(JSON.stringify(payload));
     if (payload.access_token) {
       saveAuthPayload(payload);
-      setAuthStatus(`${payload.user?.email || email} でログインしました。`);
-      await pullCloud();
+      render();
+      setAuthStatus(`${payload.user?.email || email} のアカウントを作成してログインしました。端末内データはそのままです。必要に応じて「クラウドへ保存」を押してください。`);
     } else {
-      setAuthStatus("アカウントを作成しました。確認メールが届いた場合は、メール確認後にログインしてください。");
+      renderAuthSettings();
+      setAuthStatus("確認メールを送信しました。メール内の確認リンクを開いてから、この画面でログインしてください。");
     }
-    render();
   } catch (error) {
     setAuthStatus(authErrorMessage("作成失敗", error));
   }
@@ -1149,9 +1151,8 @@ async function signIn(event) {
     const payload = await response.json();
     if (!response.ok) throw new Error(JSON.stringify(payload));
     saveAuthPayload(payload);
-    setAuthStatus(`${payload.user?.email || email} でログインしました。`);
     render();
-    await pullCloud();
+    setAuthStatus(`${payload.user?.email || email} でログインしました。端末内データはそのままです。別端末のデータを使う場合だけ「クラウドから読み込み」を押してください。`);
   } catch (error) {
     setAuthStatus(authErrorMessage("ログイン失敗", error));
   }
@@ -1193,6 +1194,16 @@ async function ensureAuthSession() {
 
 function setAuthStatus(message) {
   document.getElementById("authStatus").textContent = message;
+}
+
+async function restoreAuthOnLoad() {
+  if (!authSession?.access_token || !authReady()) return;
+  try {
+    await ensureAuthSession();
+    renderAuthSettings();
+  } catch {
+    setAuthStatus("ログイン期限が切れました。もう一度ログインしてください。");
+  }
 }
 
 function startAutoSync() {
@@ -1248,6 +1259,11 @@ async function pullCloud() {
       return;
     }
     const cloudState = rows[0].data || {};
+    if (!hasLedgerData(cloudState) && hasLedgerData(state)) {
+      setSyncStatus("クラウド側が空のため、端末内データを残しました。今の端末データを使う場合は「クラウドへ保存」を押してください。");
+      return;
+    }
+    backupLocalState();
     state.sales = cloudState.sales || [];
     state.products = cloudState.products || [];
     state.settings = { ...state.settings, ...(cloudState.settings || {}) };
@@ -1289,6 +1305,22 @@ async function pushCloud(showSuccess) {
 
 function setSyncStatus(message) {
   document.getElementById("syncStatus").textContent = message;
+}
+
+function hasLedgerData(data) {
+  return Boolean((data.sales || []).length || (data.products || []).length);
+}
+
+function backupLocalState() {
+  localStorage.setItem(
+    LOCAL_BACKUP_KEY,
+    JSON.stringify({
+      backedUpAt: new Date().toISOString(),
+      sales: state.sales,
+      products: state.products,
+      settings: state.settings,
+    }),
+  );
 }
 
 function syncErrorMessage(prefix, error) {

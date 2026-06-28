@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=25" />
-    <link rel="apple-touch-icon" href="icon.svg?v=25" />
-    <link rel="stylesheet" href="style.css?v=25" />
+    <link rel="manifest" href="manifest.json?v=26" />
+    <link rel="apple-touch-icon" href="icon.svg?v=26" />
+    <link rel="stylesheet" href="style.css?v=26" />
   </head>
   <body>
     <div class="app">
@@ -472,6 +472,7 @@
               <button id="signOutButton" type="button" class="danger">ログアウト</button>
             </form>
             <p id="authStatus" class="hint">Supabase URL / anon key を保存するとログインできます。</p>
+            <p class="hint">アカウント作成後に確認メールが届いた場合は、メール内のリンクを開いてからログインしてください。ログインだけでは端末内データは消えません。</p>
           </section>
 
           <section class="work-area">
@@ -497,6 +498,7 @@
               <button id="pushCloud" class="primary">クラウドへ保存</button>
             </div>
             <p id="syncStatus" class="hint">ログインしたアカウントごとにクラウドデータが分かれます。他メンバーのデータとは混ざりません。</p>
+            <p class="hint">今の端末データを残したい場合は先に「クラウドへ保存」。別端末のデータを取り込みたい場合だけ「クラウドから読み込み」を押してください。</p>
           </section>
 
           <section class="work-area">
@@ -518,6 +520,6 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=25"></script>
+    <script src="app.js?v=26"></script>
   </body>
 </html>
