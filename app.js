@@ -222,16 +222,16 @@ function loadSyncConfig() {
       url: "",
       anonKey: "",
       syncId: personalSyncId,
-      autoSync: "off",
+      autoSync: "on",
     };
     return {
       url: normalizeSupabaseUrl(saved.url),
       anonKey: saved.anonKey || "",
       syncId: saved.syncId && saved.syncId !== "100-yokai-main" ? saved.syncId : personalSyncId,
-      autoSync: saved.autoSync || "off",
+      autoSync: saved.autoSync || "on",
     };
   } catch {
-    return { url: "", anonKey: "", syncId: personalSyncId, autoSync: "off" };
+    return { url: "", anonKey: "", syncId: personalSyncId, autoSync: "on" };
   }
 }
 
@@ -314,7 +314,7 @@ function saveAndRender(options = {}) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   render();
   if (!options.silent) showSaveToast("保存しました");
-  if (!options.skipCloud && syncConfig.autoSync === "on") {
+  if (!options.skipCloud && shouldAutoSync()) {
     queueCloudSave();
   }
 }
@@ -1055,7 +1055,7 @@ function renderSyncSettings() {
   const form = document.getElementById("syncForm");
   form.elements.url.value = syncConfig.url || "";
   form.elements.anonKey.value = syncConfig.anonKey || "";
-  form.elements.autoSync.value = syncConfig.autoSync || "off";
+  form.elements.autoSync.value = syncConfig.autoSync || "on";
 }
 
 function renderAuthSettings() {
@@ -1131,7 +1131,8 @@ async function signUp() {
     if (payload.access_token) {
       saveAuthPayload(payload);
       render();
-      setAuthStatus(`${payload.user?.email || email} のアカウントを作成してログインしました。端末内データはそのままです。必要に応じて「クラウドへ保存」を押してください。`);
+      setAuthStatus(`${payload.user?.email || email} のアカウントを作成してログインしました。クラウド同期を確認しています...`);
+      await autoCloudLoad("アカウント作成時");
     } else {
       renderAuthSettings();
       setAuthStatus("確認メールを送信しました。メール内の確認リンクを開いてから、この画面でログインしてください。");
@@ -1165,7 +1166,8 @@ async function signIn(event) {
     if (!response.ok) throw new Error(JSON.stringify(payload));
     saveAuthPayload(payload);
     render();
-    setAuthStatus(`${payload.user?.email || email} でログインしました。端末内データはそのままです。別端末のデータを使う場合だけ「クラウドから読み込み」を押してください。`);
+    setAuthStatus(`${payload.user?.email || email} でログインしました。クラウドから読み込み中...`);
+    await autoCloudLoad("ログイン時");
   } catch (error) {
     setAuthStatus(authErrorMessage("ログイン失敗", error));
   }
@@ -1213,6 +1215,7 @@ async function restoreAuthOnLoad() {
   try {
     await ensureAuthSession();
     renderAuthSettings();
+    await autoCloudLoad("起動時");
   } catch {
     renderAuthSettings();
     setAuthStatus(`${authSession?.user?.email || "前回のアカウント"} のログイン情報を保持しています。同期に失敗する場合だけ再ログインしてください。`);
@@ -1221,7 +1224,7 @@ async function restoreAuthOnLoad() {
 
 function startAutoSync() {
   if (syncInterval) clearInterval(syncInterval);
-  if (syncConfig.autoSync === "on") {
+  if (shouldAutoSync()) {
     syncInterval = setInterval(() => pushCloud(false), 30000);
   }
 }
@@ -1233,6 +1236,10 @@ function queueCloudSave() {
 
 function syncReady() {
   return Boolean(syncConfig.url && syncConfig.anonKey && currentUserId() && authSession?.access_token);
+}
+
+function shouldAutoSync() {
+  return syncConfig.autoSync !== "off";
 }
 
 function supabaseTableUrl(query = "") {
@@ -1254,27 +1261,48 @@ function syncHeaders(prefer = "") {
   return headers;
 }
 
-async function pullCloud() {
+async function autoCloudLoad(reason) {
+  if (!syncReady()) return;
+  const result = await pullCloud({ automatic: true });
+  if (result?.action === "loaded") {
+    setAuthStatus(`${authSession?.user?.email || "アカウント"} でログイン中です。${reason}にクラウドから自動読み込みしました。`);
+  } else if (result?.action === "pushed-local") {
+    setAuthStatus(`${authSession?.user?.email || "アカウント"} でログイン中です。クラウドが空だったため、この端末のデータを自動保存しました。`);
+  }
+}
+
+async function pullCloud(options = {}) {
+  const automatic = Boolean(options?.automatic);
   if (!syncReady()) {
     setSyncStatus("Supabase URL / anon key を保存し、ログインしてください。");
-    return;
+    return { action: "not-ready" };
   }
   try {
     await ensureAuthSession();
-    setSyncStatus("クラウドから読み込み中...");
+    setSyncStatus(automatic ? "クラウドを自動確認中..." : "クラウドから読み込み中...");
     const response = await fetch(`${supabaseEndpoint()}&select=data,updated_at`, {
       headers: syncHeaders(),
     });
     if (!response.ok) throw new Error(await response.text());
     const rows = await response.json();
     if (!rows.length) {
+      if (automatic && hasLedgerData(state)) {
+        await pushCloud(false);
+        setSyncStatus("クラウドが空だったため、この端末のデータを自動保存しました。");
+        return { action: "pushed-local" };
+      }
       setSyncStatus("クラウドにデータがありません。先にクラウドへ保存してください。");
-      return;
+      return { action: "empty-cloud" };
     }
     const cloudState = rows[0].data || {};
     if (!hasLedgerData(cloudState) && hasLedgerData(state)) {
+      if (automatic) {
+        await pushCloud(false);
+        setSyncStatus("クラウド側が空だったため、この端末のデータを自動保存しました。");
+        return { action: "pushed-local" };
+      }
       setSyncStatus("クラウド側が空のため、端末内データを残しました。今の端末データを使う場合は「クラウドへ保存」を押してください。");
-      return;
+      return { action: "empty-cloud" };
     }
     backupLocalState();
     state.sales = cloudState.sales || [];
@@ -1282,8 +1310,10 @@ async function pullCloud() {
     state.settings = { ...state.settings, ...(cloudState.settings || {}) };
     saveAndRender({ skipCloud: true });
     setSyncStatus(`クラウドから読み込みました。更新: ${formatSyncTime(rows[0].updated_at)}`);
+    return { action: "loaded" };
   } catch (error) {
     setSyncStatus(syncErrorMessage("読み込み失敗", error));
+    return { action: "error" };
   }
 }
 

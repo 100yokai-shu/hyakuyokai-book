@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=27" />
-    <link rel="apple-touch-icon" href="icon.svg?v=27" />
-    <link rel="stylesheet" href="style.css?v=27" />
+    <link rel="manifest" href="manifest.json?v=28" />
+    <link rel="apple-touch-icon" href="icon.svg?v=28" />
+    <link rel="stylesheet" href="style.css?v=28" />
   </head>
   <body>
     <div class="app">
@@ -487,8 +487,8 @@
               <label class="wide">anon key<input name="anonKey" placeholder="eyJ..." /></label>
               <label>自動同期
                 <select name="autoSync">
-                  <option value="off">OFF</option>
                   <option value="on">ON</option>
+                  <option value="off">OFF</option>
                 </select>
               </label>
               <button type="submit" class="primary">同期設定を保存</button>
@@ -498,7 +498,7 @@
               <button id="pushCloud" class="primary">クラウドへ保存</button>
             </div>
             <p id="syncStatus" class="hint">ログインしたアカウントごとにクラウドデータが分かれます。他メンバーのデータとは混ざりません。</p>
-            <p class="hint">今の端末データを残したい場合は先に「クラウドへ保存」。別端末のデータを取り込みたい場合だけ「クラウドから読み込み」を押してください。</p>
+            <p class="hint">ログイン中は起動時にクラウドを自動確認し、入力・編集後は自動保存します。手動ボタンは確認用です。</p>
           </section>
 
           <section class="work-area">
@@ -520,6 +520,6 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=27"></script>
+    <script src="app.js?v=28"></script>
   </body>
 </html>
