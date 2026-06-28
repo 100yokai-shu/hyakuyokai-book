@@ -610,9 +610,42 @@ th {
   pointer-events: none;
 }
 
+.pull-refresh-indicator::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  border: 2px solid var(--accent-soft);
+  border-top-color: var(--accent-dark);
+  border-radius: 50%;
+  vertical-align: -1px;
+}
+
 .pull-refresh-indicator.show {
   transform: translate(-50%, 0);
   opacity: 1;
+}
+
+.pull-refresh-indicator.ready {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.pull-refresh-indicator.ready::before,
+.pull-refresh-indicator.loading::before {
+  border-color: rgba(255, 255, 255, 0.5);
+  border-top-color: #ffffff;
+}
+
+.pull-refresh-indicator.loading::before {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .summary-list {

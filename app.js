@@ -106,6 +106,7 @@ document.getElementById("liveSaleForm").addEventListener("submit", (event) => {
     note: form.get("note").trim(),
   });
   event.target.reset();
+  resetSaleForm(event.target);
   event.target.elements.attendance.value = 0;
   event.target.elements.newFans.value = 0;
   event.target.elements.newPhoto.value = 0;
@@ -125,6 +126,7 @@ document.getElementById("onlineSaleForm").addEventListener("submit", (event) => 
     note: form.get("note").trim(),
   });
   event.target.reset();
+  resetSaleForm(event.target);
   event.target.elements.quantity.value = 1;
 });
 
@@ -142,6 +144,7 @@ document.getElementById("otherSaleForm").addEventListener("submit", (event) => {
     note: form.get("note").trim(),
   });
   event.target.reset();
+  resetSaleForm(event.target);
   event.target.elements.quantity.value = 1;
 });
 
@@ -357,6 +360,8 @@ function preventEnterSubmit(event) {
 
 function initPullToRefresh() {
   if (!("ontouchstart" in window)) return;
+  const revealDistance = 42;
+  const refreshDistance = 118;
   const indicator = document.createElement("div");
   indicator.className = "pull-refresh-indicator";
   indicator.textContent = "下に引いて更新";
@@ -380,19 +385,21 @@ function initPullToRefresh() {
     (event) => {
       if (window.scrollY > 0 || !startY) return;
       distance = Math.max(0, event.touches[0].clientY - startY);
-      if (distance > 24) {
+      if (distance > revealDistance) {
         indicator.classList.add("show");
-        indicator.textContent = distance > 96 ? "離して更新" : "下に引いて更新";
+        indicator.classList.toggle("ready", distance > refreshDistance);
+        indicator.textContent = distance > refreshDistance ? "離して更新" : "下に引いて更新";
       }
     },
     { passive: true },
   );
 
   window.addEventListener("touchend", () => {
-    if (distance > 96) {
+    if (distance > refreshDistance) {
       refreshToLatest(indicator);
     } else {
       indicator.classList.remove("show");
+      indicator.classList.remove("ready");
     }
     startY = 0;
     distance = 0;
@@ -401,6 +408,7 @@ function initPullToRefresh() {
 
 async function refreshToLatest(indicator) {
   indicator.textContent = "更新中...";
+  indicator.classList.add("loading");
   try {
     if ("caches" in window) {
       const keys = await caches.keys();
@@ -437,6 +445,11 @@ function setDefaultDates() {
   if (!document.getElementById("annualYear").value) document.getElementById("annualYear").value = initialMonth.slice(0, 4);
   if (!document.getElementById("detailMonth").value) document.getElementById("detailMonth").value = initialMonth;
   if (!document.getElementById("detailYear").value) document.getElementById("detailYear").value = initialMonth.slice(0, 4);
+}
+
+function resetSaleForm(form) {
+  const dateInput = form.querySelector('input[type="date"]');
+  if (dateInput) dateInput.value = today();
 }
 
 function adjustStepper(button) {
@@ -876,8 +889,8 @@ function renderSalesTable(targetId, rows, options = {}) {
               <td>${formatNote(sale.note)}</td>
               <td>
                 <div class="table-actions">
-                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=26" alt="" /></button>` : ""}
-                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=26" alt="" /></button>
+                  ${options.editable ? `<button class="icon-button edit-button" onclick="toggleSaleEditor('${sale.id}')" aria-label="編集" title="編集"><img src="edit-icon.png?v=27" alt="" /></button>` : ""}
+                  <button class="icon-button delete-button" onclick="removeItem('sales', '${sale.id}')" aria-label="削除" title="削除"><img src="trash-icon.png?v=27" alt="" /></button>
                 </div>
               </td>
             </tr>
@@ -1185,7 +1198,6 @@ async function ensureAuthSession() {
   });
   const payload = await response.json();
   if (!response.ok) {
-    saveAuthSession(null);
     throw new Error(JSON.stringify(payload));
   }
   saveAuthPayload(payload);
@@ -1202,7 +1214,8 @@ async function restoreAuthOnLoad() {
     await ensureAuthSession();
     renderAuthSettings();
   } catch {
-    setAuthStatus("ログイン期限が切れました。もう一度ログインしてください。");
+    renderAuthSettings();
+    setAuthStatus(`${authSession?.user?.email || "前回のアカウント"} のログイン情報を保持しています。同期に失敗する場合だけ再ログインしてください。`);
   }
 }
 
