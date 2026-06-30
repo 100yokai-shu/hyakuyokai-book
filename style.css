@@ -135,6 +135,11 @@ button {
   color: var(--muted);
 }
 
+.hint {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 .brand p {
   color: var(--muted);
   font-size: 13px;
@@ -779,6 +784,32 @@ th {
   grid-column: auto;
 }
 
+.performance-livecount {
+  margin: -4px 2px 0;
+  justify-items: start;
+}
+
+.performance-livecount-stat {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  gap: 6px;
+  align-items: baseline;
+  width: auto;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: none;
+}
+
+.performance-livecount-stat span {
+  font-size: 11px;
+}
+
+.performance-livecount-stat strong {
+  font-size: 17px;
+}
+
 .performance-newfans-stat {
   grid-column: 2;
 }
@@ -827,7 +858,7 @@ th {
 
 .performance-breakdown-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 12px;
 }
 
@@ -851,7 +882,7 @@ th {
 
 .performance-stat-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) max-content;
   gap: 10px;
   align-items: baseline;
   padding: 9px 10px;
@@ -860,12 +891,15 @@ th {
 }
 
 .performance-stat-row span {
+  min-width: 0;
   color: var(--muted);
   font-size: 13px;
   font-weight: 800;
+  line-height: 1.25;
 }
 
 .performance-stat-row strong {
+  white-space: nowrap;
   color: var(--ink);
   font-size: 17px;
   line-height: 1;
@@ -875,14 +909,18 @@ th {
   background: var(--accent-soft);
 }
 
+.performance-stat-row.primary {
+  grid-template-columns: minmax(0, 1fr) max-content;
+}
+
 .performance-stat-row.primary span {
   color: var(--ink);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .performance-stat-row.primary strong {
   color: var(--accent-dark);
-  font-size: 25px;
+  font-size: clamp(20px, 2.15vw, 25px);
 }
 
 .performance-stat-row.money {
@@ -1114,7 +1152,8 @@ th {
 
 .hint {
   margin-top: 12px;
-  line-height: 1.7;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .file-warning {
@@ -1168,26 +1207,61 @@ th {
 
 .performance-period,
 .performance-goals {
-  padding: 16px 18px;
+  padding: 8px 10px;
+  border-radius: 18px;
 }
 
 .performance-period .section-heading,
 .performance-goals .section-heading {
-  margin-bottom: 12px;
-  padding-block: 11px;
+  gap: 8px;
+  margin: 0 0 6px;
+  padding: 6px 9px;
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+.performance-period .section-heading h3,
+.performance-goals .section-heading h3 {
+  font-size: 15px;
+}
+
+.performance-period .section-heading::before,
+.performance-goals .section-heading::before {
+  width: 5px;
 }
 
 .performance-period-controls {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .performance-goal-form {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.performance-period-controls label,
+.performance-goal-form label {
+  gap: 4px;
+  font-size: 10px;
+}
+
+.performance-period-controls input,
+.performance-period-controls select,
+.performance-goal-form input {
+  min-height: 32px;
+  padding: 5px 8px;
+  border-radius: 11px;
+  font-size: 16px;
 }
 
 .performance-goal-form .primary {
   grid-column: 1 / -1;
   justify-self: start;
+  width: auto;
+  min-height: 32px;
+  padding: 6px 14px;
+  font-size: 13px;
 }
 
 .hidden {
@@ -1426,13 +1500,25 @@ body[data-theme="white"] .swatch-white span {
 
   .performance-period,
   .performance-goals {
-    padding: 12px;
+    padding: 8px 10px;
+    border-radius: 18px;
   }
 
   .performance-period .section-heading,
   .performance-goals .section-heading {
-    margin-bottom: 10px;
-    padding: 10px 12px;
+    margin-bottom: 6px;
+    padding: 6px 9px;
+    border-radius: 14px;
+  }
+
+  .performance-period .section-heading h3,
+  .performance-goals .section-heading h3 {
+    font-size: 15px;
+  }
+
+  .performance-period .section-heading::before,
+  .performance-goals .section-heading::before {
+    width: 5px;
   }
 
   .performance-period-controls,
@@ -1442,21 +1528,24 @@ body[data-theme="white"] .swatch-white span {
 
   .performance-period-controls label,
   .performance-goal-form label {
-    font-size: 11px;
+    gap: 4px;
+    font-size: 10px;
   }
 
   .performance-period-controls input,
   .performance-period-controls select,
   .performance-goal-form input {
-    min-height: 40px;
-    padding: 8px;
-    border-radius: 13px;
+    min-height: 32px;
+    padding: 5px 8px;
+    border-radius: 11px;
+    font-size: 16px;
   }
 
   .performance-goal-form .primary {
-    width: 100%;
-    min-height: 38px;
-    padding-block: 8px;
+    width: auto;
+    min-height: 32px;
+    padding: 6px 14px;
+    font-size: 13px;
   }
 
   .performance-progress-grid {
@@ -1564,4 +1653,56 @@ body[data-theme="white"] .swatch-white span {
   h2 {
     font-size: 24px;
   }
+}
+
+.work-area.performance-period,
+.work-area.performance-goals {
+  padding: 7px 9px;
+  border-radius: 18px;
+}
+
+.work-area.performance-period .section-heading,
+.work-area.performance-goals .section-heading {
+  gap: 7px;
+  margin: 0 0 5px;
+  padding: 5px 8px;
+  border-radius: 13px;
+  box-shadow: none;
+}
+
+.work-area.performance-period .section-heading::before,
+.work-area.performance-goals .section-heading::before {
+  width: 5px;
+}
+
+.work-area.performance-period .section-heading h3,
+.work-area.performance-goals .section-heading h3 {
+  font-size: 14px;
+}
+
+.work-area.performance-period label,
+.work-area.performance-goals label {
+  gap: 3px;
+  font-size: 10px;
+}
+
+.work-area.performance-period input,
+.work-area.performance-period select,
+.work-area.performance-goals input {
+  min-height: 31px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.work-area.performance-goals .primary {
+  width: auto;
+  min-height: 31px;
+  padding: 5px 13px;
+  font-size: 12px;
+}
+
+.performance-secondary-stat.performance-livecount-stat {
+  padding: 5px 10px;
+  border-radius: 999px;
 }
