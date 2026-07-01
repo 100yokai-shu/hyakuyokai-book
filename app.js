@@ -36,10 +36,10 @@ const metricLabels = {
 };
 
 const pages = {
-  sales: "売上入力",
-  monthly: "成績詳細",
+  sales: "売上登録",
+  monthly: "月間成績",
   annual: "年間成績",
-  products: "商品管理",
+  products: "商品登録",
   settings: "設定",
   data: "データ",
 };
@@ -56,9 +56,11 @@ if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   });
 }
 
-document.querySelectorAll(".tab").forEach((button) => {
+document.querySelectorAll("[data-tab]").forEach((button) => {
   button.addEventListener("click", () => switchTab(button.dataset.tab));
 });
+
+document.getElementById("mobileMenuButton")?.addEventListener("click", toggleMobileMenu);
 
 document.querySelectorAll("[data-step-target]").forEach((button) => {
   button.addEventListener("click", () => adjustStepper(button));
@@ -320,13 +322,24 @@ function saveAndRender(options = {}) {
 }
 
 function switchTab(tab) {
-  document.querySelectorAll(".tab").forEach((item) => {
+  document.querySelectorAll("[data-tab]").forEach((item) => {
     item.classList.toggle("active", item.dataset.tab === tab);
   });
   document.querySelectorAll(".panel").forEach((panel) => {
     panel.classList.toggle("active", panel.id === tab);
   });
   document.getElementById("pageTitle").textContent = pages[tab];
+  closeMobileMenu();
+}
+
+function toggleMobileMenu() {
+  const isOpen = document.body.classList.toggle("mobile-menu-open");
+  document.getElementById("mobileMenuButton")?.setAttribute("aria-expanded", String(isOpen));
+}
+
+function closeMobileMenu() {
+  document.body.classList.remove("mobile-menu-open");
+  document.getElementById("mobileMenuButton")?.setAttribute("aria-expanded", "false");
 }
 
 function render() {
@@ -576,13 +589,16 @@ function renderMonthly() {
   document.getElementById("monthlyAttendanceAverage").textContent = formatNumber(averageAttendance(current));
   document.getElementById("monthlyNewFansTotal").textContent = formatNumber(current.newFans);
   document.getElementById("monthlyTicketTotal").textContent = formatNumber(current.ticketTotal);
-  document.getElementById("monthlyChekiAverage").textContent = formatNumber(averageChekiPerLive(current));
+  if (document.getElementById("monthlyChekiAverage")) {
+    document.getElementById("monthlyChekiAverage").textContent = formatNumber(averageChekiPerLive(current));
+  }
   renderProgressPie("monthlyTicketProgressPie", "monthlyTicketProgressText", current.ticketTotal, goal.ticketGoal, "枚");
   renderProgressPie("monthlyAttendanceProgressPie", "monthlyAttendanceProgressText", current.attendance, goal.attendanceGoal, "人");
   renderMonthlyGoalForm(month, goal);
 
   renderPerformanceStats("liveMonthlyStats", [
     ["チェキ", current.cheki, "枚", "primary"],
+    ["宴チェキ平均枚数", averageChekiPerLive(current), "枚", "secondary"],
     ["新規写メ", current.newPhoto, "枚", "secondary"],
   ]);
 

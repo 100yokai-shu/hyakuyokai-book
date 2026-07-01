@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="妖怪大福帳" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="manifest.json?v=30" />
-    <link rel="apple-touch-icon" href="icon.svg?v=30" />
-    <link rel="stylesheet" href="style.css?v=30" />
+    <link rel="manifest" href="manifest.json?v=34" />
+    <link rel="apple-touch-icon" href="icon.svg?v=34" />
+    <link rel="stylesheet" href="style.css?v=34" />
   </head>
   <body>
     <div class="app">
@@ -26,10 +26,10 @@
           </div>
         </div>
         <nav class="tabs" aria-label="メインメニュー">
-          <button class="tab active" data-tab="sales">売上入力</button>
-          <button class="tab" data-tab="monthly">成績詳細</button>
+          <button class="tab active" data-tab="sales">売上登録</button>
+          <button class="tab" data-tab="monthly">月間成績</button>
           <button class="tab" data-tab="annual">年間成績</button>
-          <button class="tab" data-tab="products">商品管理</button>
+          <button class="tab" data-tab="products">商品登録</button>
           <button class="tab" data-tab="settings">設定</button>
           <button class="tab" data-tab="data">データ</button>
         </nav>
@@ -39,9 +39,20 @@
         <header class="topbar">
           <div>
             <p class="eyebrow">100-YOKAI</p>
-            <h2 id="pageTitle">売上入力</h2>
+            <h2 id="pageTitle">売上登録</h2>
           </div>
+          <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="メニューを開く" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </header>
+
+        <div id="mobileMoreMenu" class="mobile-more-menu" aria-label="その他メニュー">
+          <button class="mobile-menu-item" data-tab="products" type="button">商品登録</button>
+          <button class="mobile-menu-item" data-tab="settings" type="button">設定</button>
+          <button class="mobile-menu-item" data-tab="data" type="button">データ・ログイン</button>
+        </div>
 
         <section id="sales" class="panel active">
           <div class="grid three">
@@ -240,7 +251,6 @@
               <div>
                 <span>チェキ券枚数計</span>
                 <p><strong id="monthlyTicketTotal">0</strong><small>枚</small></p>
-                <p class="performance-average-line">平均 <strong id="monthlyChekiAverage">0</strong><small>枚</small></p>
               </div>
               <div class="performance-total-money">
                 <span>バック合計</span>
@@ -520,6 +530,21 @@
       <div class="empty">まだデータがありません</div>
     </template>
 
-    <script src="app.js?v=30"></script>
+    <nav class="mobile-bottom-tabs" aria-label="主要メニュー">
+      <button class="mobile-tab active" data-tab="sales" type="button" aria-label="売上登録">
+        <span class="mobile-tab-icon">＋</span>
+        <span>売上登録</span>
+      </button>
+      <button class="mobile-tab" data-tab="monthly" type="button" aria-label="月間成績">
+        <span class="mobile-tab-icon icon-monthly"><img src="monthly-icon.png" alt="" /></span>
+        <span>月間成績</span>
+      </button>
+      <button class="mobile-tab" data-tab="annual" type="button" aria-label="年間成績">
+        <span class="mobile-tab-icon icon-annual"><img src="annual-icon.png" alt="" /></span>
+        <span>年間成績</span>
+      </button>
+    </nav>
+
+    <script src="app.js?v=34"></script>
   </body>
 </html>
