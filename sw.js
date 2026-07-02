@@ -1,4 +1,4 @@
-const CACHE_NAME = "hyakki-ledger-v39";
+const CACHE_NAME = "hyakki-ledger-v44";
 const APP_FILES = [
   "./",
   "./index.html",

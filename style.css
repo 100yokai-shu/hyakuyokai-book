@@ -756,10 +756,14 @@ th {
 
 .performance-primary-stat,
 .performance-secondary-stat {
+  display: grid;
+  align-content: center;
+  justify-items: center;
   padding: 16px;
   border: 1px solid var(--glass-line);
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.42);
+  text-align: center;
 }
 
 .performance-primary-stat span,
@@ -775,6 +779,9 @@ th {
 .performance-primary-stat p,
 .performance-secondary-stat p,
 .performance-ticket-heading p {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
   margin: 4px 0 0;
   color: var(--ink);
 }
@@ -836,11 +843,29 @@ th {
 
 .performance-ticket-heading {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px;
-  align-items: end;
-  padding: 4px 2px 10px;
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+  padding: 4px 0 10px;
+}
+
+.performance-ticket-heading > div {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  min-width: 0;
+  min-height: 118px;
+  padding: 16px 10px;
+  border: 1px solid var(--glass-line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.42);
+  text-align: center;
+}
+
+.performance-ticket-heading p {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
 }
 
 .performance-average-line {
@@ -858,12 +883,14 @@ th {
 .performance-total-money {
   display: grid;
   gap: 4px;
-  justify-items: end;
+  justify-items: center;
+  text-align: center;
 }
 
 .performance-total-money strong {
   color: var(--ink);
-  font-size: 22px;
+  font-size: 34px;
+  line-height: 1;
 }
 
 .performance-breakdown-grid {
@@ -1587,13 +1614,12 @@ body[data-theme="white"] .swatch-white span {
   }
 
   .performance-attendance-grid,
-  .performance-breakdown-grid,
-  .performance-ticket-heading {
+  .performance-breakdown-grid {
     grid-template-columns: 1fr;
   }
 
-  .performance-total-money {
-    justify-items: start;
+  .performance-ticket-heading {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .performance-newfans-stat {
@@ -1744,22 +1770,23 @@ body[data-theme="white"] .swatch-white span {
   }
 
   .performance-ticket-heading {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
     gap: 12px;
   }
 
+  .performance-ticket-heading > div {
+    min-height: 94px;
+    padding: 13px 8px;
+  }
+
   .performance-total-money {
-    justify-items: end;
-    text-align: right;
+    justify-items: center;
+    text-align: center;
   }
 
   .performance-ticket-heading span {
     font-size: 12px;
-  }
-
-  .performance-ticket-heading > div:first-child p {
-    padding-left: 24px;
   }
 
   .performance-ticket-heading strong {
@@ -2026,6 +2053,7 @@ body[data-theme="white"] .swatch-white span {
   .mobile-tab.active .mobile-tab-icon {
     background: rgba(255, 255, 255, 0.34);
   }
+
 }
 
 @media (max-width: 560px) {
@@ -2071,14 +2099,19 @@ body[data-theme="white"] .swatch-white span {
   }
 
   .performance-ticket-heading {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
     gap: 12px;
   }
 
+  .performance-ticket-heading > div {
+    min-height: 94px;
+    padding: 13px 8px;
+  }
+
   .performance-total-money {
-    justify-items: end;
-    text-align: right;
+    justify-items: center;
+    text-align: center;
   }
 
   .performance-ticket-heading span {
