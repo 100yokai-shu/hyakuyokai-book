@@ -1758,6 +1758,10 @@ body[data-theme="white"] .swatch-white span {
     font-size: 12px;
   }
 
+  .performance-ticket-heading > div:first-child p {
+    padding-left: 24px;
+  }
+
   .performance-ticket-heading strong {
     font-size: clamp(28px, 8vw, 34px);
     white-space: nowrap;
@@ -1820,29 +1824,84 @@ body[data-theme="white"] .swatch-white span {
   .mobile-menu-button {
     grid-column: 3;
     display: inline-grid;
-    grid-template-rows: repeat(3, 2px);
     align-content: center;
     place-items: center;
-    row-gap: 2px;
     justify-self: end;
-    width: 40px;
-    height: 34px;
+    position: relative;
+    width: 44px;
+    height: 40px;
     padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.76);
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.36);
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    border-radius: 16px;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.32)),
+      color-mix(in srgb, var(--accent-soft) 54%, transparent);
     box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.42),
-      0 8px 18px rgba(168, 95, 124, 0.08);
+      inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 10px 22px rgba(168, 95, 124, 0.12);
+    transition:
+      background 0.22s ease,
+      box-shadow 0.22s ease,
+      transform 0.22s ease;
   }
 
   .mobile-menu-button span {
+    position: absolute;
     display: block;
-    width: 15px;
+    width: 18px;
     height: 2px;
     margin: 0;
     border-radius: 999px;
     background: var(--ink);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.64);
+    transition:
+      opacity 0.18s ease,
+      transform 0.22s ease,
+      width 0.22s ease,
+      background 0.22s ease;
+  }
+
+  .mobile-menu-button span:nth-child(1) {
+    transform: translateY(-6px);
+  }
+
+  .mobile-menu-button span:nth-child(3) {
+    transform: translateY(6px);
+  }
+
+  .mobile-menu-button:hover,
+  .mobile-menu-button:focus-visible {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.62),
+      0 14px 28px rgba(168, 95, 124, 0.15);
+  }
+
+  body.mobile-menu-open .mobile-menu-button {
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.42)),
+      color-mix(in srgb, var(--accent) 20%, var(--accent-soft));
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+      0 14px 30px rgba(168, 95, 124, 0.18);
+  }
+
+  body.mobile-menu-open .mobile-menu-button span {
+    width: 19px;
+    background: var(--accent-dark);
+  }
+
+  body.mobile-menu-open .mobile-menu-button span:nth-child(1) {
+    transform: rotate(45deg);
+  }
+
+  body.mobile-menu-open .mobile-menu-button span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0.35);
+  }
+
+  body.mobile-menu-open .mobile-menu-button span:nth-child(3) {
+    transform: rotate(-45deg);
   }
 
   .mobile-more-menu {

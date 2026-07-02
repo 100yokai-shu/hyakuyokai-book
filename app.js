@@ -20,7 +20,7 @@ const colors = {
   green: ["#68be8d", "#49a572", "#f2fff8", "#ddf7e8", "#366b50"],
   cyan: ["#c1e4e9", "#83c9d3", "#f4fdff", "#e4f7fa", "#4f7780"],
   blue: ["#274a78", "#1e395d", "#f1f6ff", "#dde8fb", "#223956"],
-  purple: ["#7058a3", "#574285", "#f7f3ff", "#e9e1fb", "#473769"],
+  purple: ["#a59aca", "#8f82be", "#fbf9ff", "#eeeafa", "#5a5273"],
   black: ["#595857", "#403f3e", "#f7f7f6", "#e9e7e5", "#3f3e3d"],
   white: ["#f7fcfe", "#d8d6d2", "#ffffff", "#f3f1ec", "#5f5d59"],
   gold: ["#b9a46a", "#8f7d4b", "#fbf7ec", "#ede3c7", "#6f623b"],
@@ -334,12 +334,18 @@ function switchTab(tab) {
 
 function toggleMobileMenu() {
   const isOpen = document.body.classList.toggle("mobile-menu-open");
-  document.getElementById("mobileMenuButton")?.setAttribute("aria-expanded", String(isOpen));
+  updateMobileMenuButton(isOpen);
 }
 
 function closeMobileMenu() {
   document.body.classList.remove("mobile-menu-open");
-  document.getElementById("mobileMenuButton")?.setAttribute("aria-expanded", "false");
+  updateMobileMenuButton(false);
+}
+
+function updateMobileMenuButton(isOpen) {
+  const button = document.getElementById("mobileMenuButton");
+  button?.setAttribute("aria-expanded", String(isOpen));
+  button?.setAttribute("aria-label", isOpen ? "メニューを閉じる" : "メニューを開く");
 }
 
 function render() {
