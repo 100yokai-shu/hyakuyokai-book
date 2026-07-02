@@ -2368,3 +2368,47 @@ body.mobile-menu-open .mobile-more-menu {
 .mobile-tab.active .mobile-tab-icon {
   background: rgba(255, 255, 255, 0.34);
 }
+
+.grid.two,
+.grid.three {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.metrics,
+.form-grid,
+.detail-controls,
+.sale-editor {
+  grid-template-columns: 1fr;
+}
+
+.performance-period-controls,
+.performance-goal-form,
+.performance-progress-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.wide {
+  grid-column: span 1;
+}
+
+.work-area {
+  border-radius: 22px;
+  padding: 14px;
+}
+
+.section-heading {
+  margin: -2px -2px 16px;
+  padding: 12px 14px;
+}
+
+.stepper {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+input,
+select,
+textarea {
+  min-width: 0;
+  font-size: 16px;
+}
