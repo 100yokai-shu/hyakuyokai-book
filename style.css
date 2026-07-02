@@ -2388,6 +2388,77 @@ body.mobile-menu-open .mobile-more-menu {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.performance-progress-grid {
+  gap: 10px;
+}
+
+.performance-progress-grid .progress-card {
+  min-width: 0;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 8px;
+  text-align: center;
+}
+
+.performance-progress-grid .progress-pie {
+  width: 92px;
+  height: 92px;
+}
+
+.performance-progress-grid .progress-card p {
+  margin-top: 3px;
+  font-size: 16px;
+}
+
+.performance-progress-grid .progress-card span {
+  font-size: 12px;
+}
+
+.performance-attendance-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.performance-attendance-grid .performance-primary-stat,
+.performance-attendance-grid .performance-secondary-stat {
+  min-width: 0;
+  padding: 12px 10px;
+}
+
+.performance-attendance-grid span {
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.performance-attendance-grid p {
+  margin-top: 6px;
+}
+
+.performance-attendance-grid .performance-primary-stat strong,
+.performance-attendance-grid .performance-secondary-stat strong {
+  font-size: clamp(24px, 8.5vw, 32px);
+}
+
+.performance-newfans-stat {
+  grid-column: auto;
+}
+
+.performance-ticket-heading > div {
+  min-height: 94px;
+  padding: 13px 8px;
+}
+
+.performance-ticket-heading span {
+  font-size: 12px;
+}
+
+.performance-ticket-heading strong {
+  font-size: clamp(28px, 8vw, 34px);
+  white-space: nowrap;
+}
+
 .wide {
   grid-column: span 1;
 }
