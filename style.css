@@ -1717,6 +1717,53 @@ body[data-theme="white"] .swatch-white span {
   border-radius: 999px;
 }
 
+@media (max-width: 560px) {
+  .performance-attendance-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .performance-attendance-grid .performance-primary-stat,
+  .performance-attendance-grid .performance-secondary-stat {
+    min-width: 0;
+    padding: 12px 10px;
+  }
+
+  .performance-attendance-grid span {
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  .performance-attendance-grid p {
+    margin-top: 6px;
+  }
+
+  .performance-attendance-grid .performance-primary-stat strong,
+  .performance-attendance-grid .performance-secondary-stat strong {
+    font-size: clamp(24px, 8.5vw, 32px);
+  }
+
+  .performance-ticket-heading {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+  }
+
+  .performance-total-money {
+    justify-items: end;
+    text-align: right;
+  }
+
+  .performance-ticket-heading span {
+    font-size: 12px;
+  }
+
+  .performance-ticket-heading strong {
+    font-size: clamp(28px, 8vw, 34px);
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 920px) {
   body {
     padding-top: calc(66px + env(safe-area-inset-top));
@@ -1747,7 +1794,7 @@ body[data-theme="white"] .swatch-white span {
     border-bottom: 1px solid rgba(255, 255, 255, 0.48);
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.2)),
-      color-mix(in srgb, var(--accent-soft) 18%, transparent);
+      var(--accent-soft);
     color: var(--ink);
     box-shadow: 0 10px 28px rgba(168, 95, 124, 0.08);
     backdrop-filter: blur(34px) saturate(1.45);
@@ -1773,7 +1820,10 @@ body[data-theme="white"] .swatch-white span {
   .mobile-menu-button {
     grid-column: 3;
     display: inline-grid;
+    grid-template-rows: repeat(3, 2px);
+    align-content: center;
     place-items: center;
+    row-gap: 2px;
     justify-self: end;
     width: 40px;
     height: 34px;
@@ -1788,9 +1838,9 @@ body[data-theme="white"] .swatch-white span {
 
   .mobile-menu-button span {
     display: block;
-    width: 16px;
+    width: 15px;
     height: 2px;
-    margin: 1px 0;
+    margin: 0;
     border-radius: 999px;
     background: var(--ink);
   }
@@ -1845,7 +1895,7 @@ body[data-theme="white"] .swatch-white span {
     border-radius: 22px;
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.18)),
-      color-mix(in srgb, var(--accent-soft) 18%, transparent);
+      var(--accent-soft);
     box-shadow: 0 14px 36px rgba(168, 95, 124, 0.1);
     backdrop-filter: blur(34px) saturate(1.45);
     -webkit-backdrop-filter: blur(34px) saturate(1.45);
@@ -1934,5 +1984,50 @@ body[data-theme="white"] .swatch-white span {
 
   .mobile-bottom-tabs {
     width: min(330px, calc(100vw - 24px));
+  }
+
+  .performance-attendance-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .performance-attendance-grid .performance-primary-stat,
+  .performance-attendance-grid .performance-secondary-stat {
+    min-width: 0;
+    padding: 12px 10px;
+  }
+
+  .performance-attendance-grid span {
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  .performance-attendance-grid p {
+    margin-top: 6px;
+  }
+
+  .performance-attendance-grid .performance-primary-stat strong,
+  .performance-attendance-grid .performance-secondary-stat strong {
+    font-size: clamp(24px, 8.5vw, 32px);
+  }
+
+  .performance-ticket-heading {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+  }
+
+  .performance-total-money {
+    justify-items: end;
+    text-align: right;
+  }
+
+  .performance-ticket-heading span {
+    font-size: 12px;
+  }
+
+  .performance-ticket-heading strong {
+    font-size: clamp(28px, 8vw, 34px);
+    white-space: nowrap;
   }
 }
